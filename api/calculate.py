@@ -11,17 +11,27 @@ class handler(BaseHTTPRequestHandler):
             params = json.loads(post_data.decode('utf-8'))
 
             # Load data - handle both local and Vercel environments
-            try:
-                # Try current directory first (Vercel)
-                current_dir = os.path.dirname(os.path.abspath(__file__))
-                data_path = os.path.join(current_dir, 'data.json')
-                with open(data_path, 'r') as f:
-                    data = json.load(f)
-            except FileNotFoundError:
-                # Fallback for different directory structures
-                data_path = os.path.join(os.getcwd(), 'api', 'data.json')
-                with open(data_path, 'r') as f:
-                    data = json.load(f)
+            data = None
+            errors = []
+
+            # Try multiple paths
+            paths_to_try = [
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.json'),
+                os.path.join(os.getcwd(), 'api', 'data.json'),
+                '/var/task/api/data.json',  # Vercel specific path
+            ]
+
+            for path in paths_to_try:
+                try:
+                    with open(path, 'r') as f:
+                        data = json.load(f)
+                    break
+                except Exception as e:
+                    errors.append(f"{path}: {str(e)}")
+                    continue
+
+            if data is None:
+                raise FileNotFoundError(f"Could not find data.json. Tried: {'; '.join(errors)}")
             
             # Calculate fees
             result = calculate_grid_fees(params, data)

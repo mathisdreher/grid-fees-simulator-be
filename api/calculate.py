@@ -63,10 +63,10 @@ def calculate_grid_fees(params, data):
     """
     Calculate grid fees based on parameters
     """
-    dso_tso = params.get('dso_tso')
-    region = params.get('region', '')
-    voltage = params.get('voltage')
-    connection_type = params.get('connection_type')
+    dso_tso = params.get('dso_tso', '').strip()
+    region = params.get('region', '').strip()
+    voltage = params.get('voltage', '').strip()
+    connection_type = params.get('connection_type', '').strip()
     offtake_energy = float(params.get('offtake_energy', 0))  # MWh/y
     injection_energy = float(params.get('injection_energy', 0))  # MWh/y
     peak_monthly = float(params.get('peak_monthly', 0))  # MW
@@ -79,17 +79,22 @@ def calculate_grid_fees(params, data):
     for fee in data['fees']:
         matches = True
         
-        if fee['DSO/TSO Selection'] != dso_tso:
+        fee_dso = (fee.get('DSO/TSO Selection') or '').strip()
+        fee_region = (fee.get('Region') or '').strip()
+        fee_voltage = (fee.get('Voltage Level') or '').strip()
+        fee_connection = (fee.get('Connection Type') or '').strip()
+        
+        if fee_dso != dso_tso:
             matches = False
         
-        if dso_tso == 'Fluvius' and fee.get('Region') != region:
+        if dso_tso == 'Fluvius' and fee_region != region:
             matches = False
         
-        if fee.get('Voltage Level') != voltage:
+        if fee_voltage != voltage:
             matches = False
         
-        # Connection type might be NaN for some configurations (like Elia)
-        if pd_notna(fee.get('Connection Type')) and fee.get('Connection Type') != connection_type:
+        # Connection type might be empty for some configurations (like Elia)
+        if fee_connection and fee_connection != connection_type:
             matches = False
         
         if matches:
@@ -106,7 +111,7 @@ def calculate_grid_fees(params, data):
     bess_multipliers = {}
     if is_bess:
         for exemption in data['bess_exemptions']:
-            if exemption['DSO/TSO Selection'] == dso_tso:
+            if (exemption.get('DSO/TSO Selection') or '').strip() == dso_tso:
                 fee_type = exemption['Fee Type']
                 multiplier = exemption['Multiplier']
                 bess_multipliers[fee_type] = multiplier

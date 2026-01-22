@@ -3,32 +3,42 @@ const API_BASE = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api' 
     : '/api';
 
-let optionsData = null;
+// Configuration data embedded directly - no API call needed
+const optionsData = {
+    dsos: ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa'],
+    regions: ["Antwerpen", "Halle-Vilvoorde", "Kempen", "Limburg", "Midden-Vlaanderen", "West", "Zenne-Dijle", "Imewo"],
+    voltage_levels: {
+        "Elia": ["110-380 kV", "30-70 kV", "Transfo < 30 kV"],
+        "Fluvius": ["26-36 kV", "1-26 kV"],
+        "Sibelga": ["1-26 kV"],
+        "Ores": ["MT"],
+        "Resa": ["MT"]
+    },
+    connection_types: {
+        "Elia": [],
+        "Fluvius": ["Post", "Grid"],
+        "Sibelga": ["Main", "Backup"],
+        "Ores": ["Post", "Grid"],
+        "Resa": ["Post", "Grid"]
+    }
+};
 
 // Initialize the app
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadOptions();
+document.addEventListener('DOMContentLoaded', () => {
+    initializeOptions();
     setupEventListeners();
 });
 
-// Load available options from API
-async function loadOptions() {
-    try {
-        const response = await fetch(`${API_BASE}/options`);
-        optionsData = await response.json();
-        
-        // Populate DSO/TSO dropdown
-        const dsoSelect = document.getElementById('dso_tso');
-        optionsData.dsos.forEach(dso => {
-            const option = document.createElement('option');
-            option.value = dso;
-            option.textContent = dso;
-            dsoSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error('Error loading options:', error);
-        showError('Failed to load configuration options. Please refresh the page.');
-    }
+// Initialize options from embedded data
+function initializeOptions() {
+    // Populate DSO/TSO dropdown
+    const dsoSelect = document.getElementById('dso_tso');
+    optionsData.dsos.forEach(dso => {
+        const option = document.createElement('option');
+        option.value = dso;
+        option.textContent = dso;
+        dsoSelect.appendChild(option);
+    });
 }
 
 // Setup event listeners

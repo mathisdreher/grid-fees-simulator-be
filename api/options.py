@@ -5,29 +5,29 @@ import os
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            # Load data - handle both local and Vercel environments
-            import sys
-            data = None
-            errors = []
+            # Multiple strategies to find data.json in Vercel environment
+            current_file = os.path.abspath(__file__)
+            current_dir = os.path.dirname(current_file)
 
-            # Try multiple paths
-            paths_to_try = [
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.json'),
-                os.path.join(os.getcwd(), 'api', 'data.json'),
-                '/var/task/api/data.json',  # Vercel specific path
-            ]
+            # Strategy 1: Same directory as this file
+            data_path = os.path.join(current_dir, 'data.json')
 
-            for path in paths_to_try:
-                try:
-                    with open(path, 'r') as f:
-                        data = json.load(f)
-                    break
-                except Exception as e:
-                    errors.append(f"{path}: {str(e)}")
-                    continue
+            if not os.path.exists(data_path):
+                # Strategy 2: Check parent directory
+                parent_dir = os.path.dirname(current_dir)
+                data_path = os.path.join(parent_dir, 'api', 'data.json')
 
-            if data is None:
-                raise FileNotFoundError(f"Could not find data.json. Tried: {'; '.join(errors)}")
+            if not os.path.exists(data_path):
+                # Strategy 3: Check /var/task (Vercel Lambda)
+                data_path = '/var/task/api/data.json'
+
+            if not os.path.exists(data_path):
+                # Strategy 4: Relative to current working directory
+                data_path = os.path.join(os.getcwd(), 'api', 'data.json')
+
+            # Try to load the data
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
 
             # Extract unique options from fees data
             dsos = ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa']
@@ -47,7 +47,23 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Cache-Control', 'no-cache')
             self.end_headers()
             self.wfile.write(json.dumps(options).encode())
-            
+
+        except FileNotFoundError as e:
+            # Detailed error for debugging
+            error_info = {
+                'error': 'Data file not found',
+                'details': str(e),
+                'current_dir': os.path.dirname(os.path.abspath(__file__)),
+                'cwd': os.getcwd(),
+                'attempted_path': data_path if 'data_path' in locals() else 'unknown',
+                'dir_contents': os.listdir(os.path.dirname(os.path.abspath(__file__)))
+            }
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(error_info).encode())
+
         except Exception as e:
             self.send_response(500)
             self.send_header('Content-type', 'application/json')
@@ -59,10 +75,11 @@ class handler(BaseHTTPRequestHandler):
                 'message': 'Failed to load configuration data'
             }
             self.wfile.write(json.dumps(error_response).encode())
-    
+
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
+

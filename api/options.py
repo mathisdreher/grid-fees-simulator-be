@@ -5,12 +5,18 @@ import os
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            # Load data
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            data_path = os.path.join(current_dir, 'data.json')
-
-            with open(data_path, 'r') as f:
-                data = json.load(f)
+            # Load data - handle both local and Vercel environments
+            try:
+                # Try current directory first (Vercel)
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                data_path = os.path.join(current_dir, 'data.json')
+                with open(data_path, 'r') as f:
+                    data = json.load(f)
+            except FileNotFoundError:
+                # Fallback for different directory structures
+                data_path = os.path.join(os.getcwd(), 'api', 'data.json')
+                with open(data_path, 'r') as f:
+                    data = json.load(f)
             
             # Extract unique options from fees data
             dsos = ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa']
@@ -35,7 +41,11 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            error_response = {'error': str(e)}
+            error_response = {
+                'error': str(e),
+                'error_type': type(e).__name__,
+                'message': 'Failed to load configuration data'
+            }
             self.wfile.write(json.dumps(error_response).encode())
     
     def do_OPTIONS(self):

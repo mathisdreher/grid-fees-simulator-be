@@ -9,13 +9,19 @@ class handler(BaseHTTPRequestHandler):
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             params = json.loads(post_data.decode('utf-8'))
-            
-            # Load data
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            data_path = os.path.join(current_dir, 'data.json')
 
-            with open(data_path, 'r') as f:
-                data = json.load(f)
+            # Load data - handle both local and Vercel environments
+            try:
+                # Try current directory first (Vercel)
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                data_path = os.path.join(current_dir, 'data.json')
+                with open(data_path, 'r') as f:
+                    data = json.load(f)
+            except FileNotFoundError:
+                # Fallback for different directory structures
+                data_path = os.path.join(os.getcwd(), 'api', 'data.json')
+                with open(data_path, 'r') as f:
+                    data = json.load(f)
             
             # Calculate fees
             result = calculate_grid_fees(params, data)

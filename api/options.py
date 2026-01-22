@@ -1,9 +1,25 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import os
+import sys
+import traceback
 
 class handler(BaseHTTPRequestHandler):
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
     def do_GET(self):
+        # Set CORS headers for all responses
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        
         try:
             # Multiple strategies to find data.json in Vercel environment
             current_file = os.path.abspath(__file__)
@@ -40,46 +56,16 @@ class handler(BaseHTTPRequestHandler):
                 'connection_types': data.get('connection_type_variants', {})
             }
 
-            # Send response
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Cache-Control', 'no-cache')
-            self.end_headers()
+            # Send response - headers already sent above
             self.wfile.write(json.dumps(options).encode())
 
-        except FileNotFoundError as e:
-            # Detailed error for debugging
-            error_info = {
-                'error': 'Data file not found',
-                'details': str(e),
-                'current_dir': os.path.dirname(os.path.abspath(__file__)),
-                'cwd': os.getcwd(),
-                'attempted_path': data_path if 'data_path' in locals() else 'unknown',
-                'dir_contents': os.listdir(os.path.dirname(os.path.abspath(__file__)))
-            }
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps(error_info).encode())
-
         except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
+            # Error response - but headers already sent with 200, so send error as JSON
             error_response = {
                 'error': str(e),
                 'error_type': type(e).__name__,
+                'traceback': traceback.format_exc(),
                 'message': 'Failed to load configuration data'
             }
             self.wfile.write(json.dumps(error_response).encode())
-
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
 

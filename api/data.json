@@ -1,0 +1,1134 @@
+{
+  "fees": [
+    {
+      "Key": "Elia - 110-380",
+      "DSO/TSO Selection": "Elia",
+      "Region": null,
+      "Voltage Level": "110-380 kV",
+      "Connection Type": null,
+      "Injection Fixed": null,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": null,
+      "Offtake Contracted": 7.5485,
+      "Offtake Peak Monthly": 4.74,
+      "Offtake Peak Yearly": 9.826,
+      "Offtake Volumetric": 0.0025949,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Elia - 30-70",
+      "DSO/TSO Selection": "Elia",
+      "Region": null,
+      "Voltage Level": "30-70 kV",
+      "Connection Type": null,
+      "Injection Fixed": null,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": null,
+      "Offtake Contracted": 13.606,
+      "Offtake Peak Monthly": 7.2864,
+      "Offtake Peak Yearly": 14.88,
+      "Offtake Volumetric": 0.0039521,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Elia -Transfo < 30kV",
+      "DSO/TSO Selection": "Elia",
+      "Region": null,
+      "Voltage Level": "Transfo < 30 kV",
+      "Connection Type": null,
+      "Injection Fixed": null,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": null,
+      "Offtake Contracted": 25.1504,
+      "Offtake Peak Monthly": 9.8844,
+      "Offtake Peak Yearly": 19.9574,
+      "Offtake Volumetric": 0.0067469,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Antwerpen - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Antwerpen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 41.6412648,
+      "Offtake Peak Monthly": 56.8450092,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0004869,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Antwerpen - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Antwerpen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 33.6582672,
+      "Offtake Peak Monthly": 54.3035736,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0041367,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Antwerpen - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Antwerpen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 41.6412648,
+      "Offtake Peak Monthly": 56.8450092,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0004869,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Antwerpen - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Antwerpen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 33.6582672,
+      "Offtake Peak Monthly": 54.3035736,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0041367,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Halle-Vilvoorde - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Halle-Vilvoorde",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 25.93092,
+      "Offtake Peak Monthly": 57.44691,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.000402,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Halle-Vilvoorde - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Halle-Vilvoorde",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 37.1110092,
+      "Offtake Peak Monthly": 60.1395192,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0050562,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Halle-Vilvoorde - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Halle-Vilvoorde",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 25.93092,
+      "Offtake Peak Monthly": 57.44691,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.000402,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Halle-Vilvoorde - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Halle-Vilvoorde",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 37.1110092,
+      "Offtake Peak Monthly": 60.1395192,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0050562,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Kempen - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Kempen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 28.6217448,
+      "Offtake Peak Monthly": 39.1871208,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003942,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Kempen - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Kempen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 6.8373552,
+      "Offtake Peak Monthly": 9.6334692,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0079988,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Kempen - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Kempen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 28.6217,
+      "Offtake Peak Monthly": 39.1871208,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003942,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Kempen - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Kempen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 31.567734,
+      "Offtake Peak Monthly": 46.8630636,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0042205,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Limburg - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Limburg",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 25.6442232,
+      "Offtake Peak Monthly": 32.2406844,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003983,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Limburg - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Limburg",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 30.4061988,
+      "Offtake Peak Monthly": 32.2406844,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0058493,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Limburg - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Limburg",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 25.6442232,
+      "Offtake Peak Monthly": 32.2406844,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003983,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Limburg - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Limburg",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 30.4061988,
+      "Offtake Peak Monthly": 48.912096,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0058493,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Midden-Vlaanderen - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Midden-Vlaanderen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 30.9004704,
+      "Offtake Peak Monthly": 43.1829264,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0002574,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Midden-Vlaanderen - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Midden-Vlaanderen",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.0576459724,
+      "Offtake Contracted": 14.6849424,
+      "Offtake Peak Monthly": 21.9646632,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0037053,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Midden-Vlaanderen - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Midden-Vlaanderen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 30.9004704,
+      "Offtake Peak Monthly": 43.1829264,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0002574,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Midden-Vlaanderen - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Midden-Vlaanderen",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 35.1788388,
+      "Offtake Peak Monthly": 50.4530592,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0037881,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - West - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "West",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 35.6765424,
+      "Offtake Peak Monthly": 46.19853,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0004294,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - West - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "West",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 41.6436,
+      "Offtake Peak Monthly": 59.7614052,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0042244,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - West - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "West",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 35.6765424,
+      "Offtake Peak Monthly": 46.19853,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0004294,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - West - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "West",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 41.6436,
+      "Offtake Peak Monthly": 59.7614052,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0042244,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Zenne-Dijle - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Zenne-Dijle",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 37.9655376,
+      "Offtake Peak Monthly": 47.964726,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003951,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Zenne-Dijle - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Zenne-Dijle",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 40.6844988,
+      "Offtake Peak Monthly": 59.85696,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0042254,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Zenne-Dijle - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Zenne-Dijle",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 37.9655376,
+      "Offtake Peak Monthly": 47.964726,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003951,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Zenne-Dijle - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Zenne-Dijle",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 40.6844988,
+      "Offtake Peak Monthly": 59.85696,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0042254,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Imewo - 26 - 36 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Imewo",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 39.4778064,
+      "Offtake Peak Monthly": 46.4718228,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003757,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Imewo - 26 - 36 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Imewo",
+      "Voltage Level": "26-36 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 36.105918,
+      "Offtake Peak Monthly": 54.2288988,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0039226,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Imewo - 1-26 - Post",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Imewo",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Post",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 39.4778064,
+      "Offtake Peak Monthly": 46.4718228,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0003757,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Fluvius - Imewo - 1-26 - Grid",
+      "DSO/TSO Selection": "Fluvius",
+      "Region": "Imewo",
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.05765,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": 0.001751,
+      "Injection Other": null,
+      "Offtake Fixed": 0.05765,
+      "Offtake Contracted": 36.105918,
+      "Offtake Peak Monthly": 54.2288988,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0039226,
+      "Offtake Other": null
+    },
+    {
+      "Key": "Sibelga - 1-26 - Main",
+      "DSO/TSO Selection": "Sibelga",
+      "Region": null,
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Main",
+      "Injection Fixed": null,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.54311,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 46.02238994,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0038031,
+      "Offtake Other": 0.0307558
+    },
+    {
+      "Key": "Sibelga - 1-26 - Backup",
+      "DSO/TSO Selection": "Sibelga",
+      "Region": null,
+      "Voltage Level": "1-26 kV",
+      "Connection Type": "Backup",
+      "Injection Fixed": null,
+      "Injection Contracted": null,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.54311,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 23.01119497,
+      "Offtake Peak Yearly": null,
+      "Offtake Volumetric": 0.0038031,
+      "Offtake Other": 0.0307558
+    },
+    {
+      "Key": "Resa - MT - Post",
+      "DSO/TSO Selection": "Resa",
+      "Region": null,
+      "Voltage Level": "MT",
+      "Connection Type": "Post ",
+      "Injection Fixed": 0.87758,
+      "Injection Contracted": 0.4709669,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.90655,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 3.9067816,
+      "Offtake Peak Yearly": 0.08139126667,
+      "Offtake Volumetric": 0.000392,
+      "Offtake Other": 0.0045457
+    },
+    {
+      "Key": "Resa - MT - Grid",
+      "DSO/TSO Selection": "Resa",
+      "Region": null,
+      "Voltage Level": "MT",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.66523,
+      "Injection Contracted": 0.0438992,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.79643,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 30.9334664,
+      "Offtake Peak Yearly": 0.6444472,
+      "Offtake Volumetric": 0.0049894,
+      "Offtake Other": 0.0078666
+    },
+    {
+      "Key": "Ores - MT - Post",
+      "DSO/TSO Selection": "Ores",
+      "Region": null,
+      "Voltage Level": "MT",
+      "Connection Type": "Post ",
+      "Injection Fixed": 0.87758,
+      "Injection Contracted": 0.4709669,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.87569,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 3.0893992,
+      "Offtake Peak Yearly": 0.06436246667,
+      "Offtake Volumetric": 0.0001288,
+      "Offtake Other": 0.0050172
+    },
+    {
+      "Key": "Ores - MT - Grid",
+      "DSO/TSO Selection": "Ores",
+      "Region": null,
+      "Voltage Level": "MT",
+      "Connection Type": "Grid",
+      "Injection Fixed": 0.66523,
+      "Injection Contracted": 0.0438992,
+      "Injection Peak Monthly": null,
+      "Injection Peak Yearly": null,
+      "Injection Volumetric": null,
+      "Injection Other": null,
+      "Offtake Fixed": 0.63734,
+      "Offtake Contracted": null,
+      "Offtake Peak Monthly": 22.355108,
+      "Offtake Peak Yearly": 0.4657314333,
+      "Offtake Volumetric": 0.0040319,
+      "Offtake Other": 0.0085843
+    }
+  ],
+  "bess_exemptions": [
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Peak Yearly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Volumetric",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Injection Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Peak Monthly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Peak Yearly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Volumetric",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Elia",
+      "Fee Type": "Offtake Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Peak Yearly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Volumetric",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Injection Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Contracted",
+      "Multiplier": 0.2
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Peak Monthly",
+      "Multiplier": 0.2
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Peak Yearly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Volumetric",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Fluvius",
+      "Fee Type": "Offtake Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Peak Yearly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Volumetric",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Injection Other",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Peak Yearly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Volumetric",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Sibelga",
+      "Fee Type": "Offtake Other",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Fixed",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Contracted",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Peak Monthly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Peak Yearly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Volumetric",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Injection Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Contracted",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Peak Yearly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Volumetric",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Resa",
+      "Fee Type": "Offtake Other",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Fixed",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Contracted",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Peak Monthly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Peak Yearly",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Volumetric",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Injection Other",
+      "Multiplier": 0.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Fixed",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Contracted",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Peak Monthly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Peak Yearly",
+      "Multiplier": 1.0
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Volumetric",
+      "Multiplier": 0.15
+    },
+    {
+      "DSO/TSO Selection": "Ores",
+      "Fee Type": "Offtake Other",
+      "Multiplier": 0.15
+    }
+  ],
+  "connection_types": {
+    "Elia": [
+      "110-380 kV",
+      "30-70 kV",
+      "Transfo < 30 kV"
+    ],
+    "Fluvius": [
+      "26-36 kV",
+      "1-26 kV"
+    ],
+    "Sibelga": [
+      "1-26 kV"
+    ],
+    "Ores": [
+      "MT"
+    ],
+    "Resa": [
+      "MT"
+    ]
+  },
+  "connection_type_variants": {
+    "Elia": [],
+    "Fluvius": [
+      "Post",
+      "Grid"
+    ],
+    "Sibelga": [
+      "Main",
+      "Backup"
+    ],
+    "Ores": [
+      "Post",
+      "Grid"
+    ],
+    "Resa": [
+      "Post",
+      "Grid"
+    ]
+  },
+  "fluvius_regions": [
+    "Antwerpen",
+    "Halle-Vilvoorde",
+    "Kempen",
+    "Limburg",
+    "Midden-Vlaanderen",
+    "West",
+    "Zenne-Dijle",
+    "Imewo"
+  ]
+}

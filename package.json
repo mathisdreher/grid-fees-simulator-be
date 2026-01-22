@@ -1,0 +1,21 @@
+{
+  "name": "belgian-grid-fees-calculator",
+  "version": "1.0.0",
+  "description": "Belgian Grid Fees Calculator 2026",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel",
+    "deploy:prod": "vercel --prod"
+  },
+  "keywords": [
+    "belgium",
+    "grid-fees",
+    "energy",
+    "calculator"
+  ],
+  "author": "Flexcity",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}

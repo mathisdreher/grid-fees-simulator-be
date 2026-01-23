@@ -1,0 +1,402 @@
+================================================================================
+BELGIAN GRID FEES CALCULATOR - TECHNICAL CALCULATION SPECIFICATION
+================================================================================
+Version 3.0 | January 2026 | Based on 2026 Tariff Publications
+All values excluding VAT
+================================================================================
+
+KEY METHODOLOGY CLARIFICATIONS
+--------------------------------------------------------------------------------
+1. BESS Energy Model: Offtake = Discharge ÷ √efficiency, 
+                      Injection = Discharge × √efficiency
+
+2. Peak Factors (Ores/Resa): The 2/3 and 1/3 factors define how to MEASURE 
+   peaks, not how to calculate fees
+
+3. Sibelga E1: Degression factor (0.803714 for 1 MW) is applied to peak 
+   demand billing, varies with load
+
+4. Fee Calculation: Annual Cost = Rate × Input Value (peak, energy, or 
+   capacity as applicable)
+
+
+================================================================================
+1. MASTER CALCULATION FORMULA
+================================================================================
+
+Total Annual Cost (k€/y) = Σ Offtake Fees + Σ Injection Fees
+
+Each direction has up to 6 components:
+
+Component              Unit           Calculation
+--------------------------------------------------------------------------------
+Fixed                  k€/year        Fixed_Rate (flat annual fee)
+Contracted Capacity    k€/MVA/year    Rate × Contracted_Capacity_MVA
+Peak Monthly           k€/MW/year     Rate × Billable_Monthly_Peak_MW
+Peak Yearly            k€/MW/year     Rate × Billable_Annual_Peak_MW
+Volumetric             k€/MWh         Rate × Annual_Energy_MWh
+Other (PSO, etc.)      k€/MWh         Rate × Annual_Energy_MWh
+
+⚠ CRITICAL: The 'Billable Peak' is determined by operator-specific measurement 
+rules (see Section 3). For the web app calculator, users input the billable 
+peak directly. For BESS quick calculator, peak = BESS rated power.
+
+
+================================================================================
+2. BESS ENERGY CALCULATION MODEL
+================================================================================
+
+For Battery Energy Storage Systems, energy consumption is derived from 
+technical specifications using the one-way efficiency model.
+
+INPUT PARAMETERS
+--------------------------------------------------------------------------------
+Parameter                Symbol    Example (1 MW / 2 MWh)
+--------------------------------------------------------------------------------
+BESS Power Rating        P         1 MW
+BESS Duration            D         2 hours
+Cycles per Day           C         1.5 cycles/day
+Round-Trip Efficiency    η         88% (0.88)
+
+DERIVED VALUES
+--------------------------------------------------------------------------------
+Discharge Energy    = P × D × C × 365 
+                    = 1 × 2 × 1.5 × 365 
+                    = 1,095 MWh/year
+
+One-Way Efficiency  = √η 
+                    = √0.88 
+                    = 0.9381
+
+Offtake (Charging)  = Discharge ÷ √η 
+                    = 1,095 ÷ 0.9381 
+                    = 1,167.3 MWh/year
+
+Injection (Disch.)  = Discharge × √η 
+                    = 1,095 × 0.9381 
+                    = 1,027.2 MWh/year
+
+Peak Demand         = P = 1 MW (both monthly and annual)
+Contracted Capacity = P = 1 MVA
+
+ℹ INFO: The one-way efficiency model accounts for losses during both charging 
+(grid→battery) and discharging (battery→grid). 
+Total losses: Offtake - Injection = 140.1 MWh/year (12% of discharge).
+
+
+================================================================================
+3. OPERATOR-SPECIFIC RULES
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 ELIA (TSO) - High Voltage Transmission
+--------------------------------------------------------------------------------
+
+Elia operates the Belgian transmission grid (≥30 kV). 
+Only OFFTAKE fees apply (no injection fees).
+
+TARIFF RATES (k€)
+--------------------------------------------------------------------------------
+Voltage        Contracted   Peak Mo.    Peak Yr.    Volumetric
+               (/MVA/y)     (/MW/y)     (/MW/y)     (/MWh)
+--------------------------------------------------------------------------------
+110-380 kV     7.5485       4.74        9.826       0.002595
+30-70 kV       13.606       7.2864      14.88       0.003952
+Transfo <30kV  25.1504      9.8844      19.9574     0.006747
+
+BILLABLE PEAK DETERMINATION
+• Monthly Peak: 11th highest quarter-hour peak of the month
+• Exclusion: April-September weekdays 10:00-19:00 excluded from monthly calc
+• Annual Peak: Highest peak during tariff period (Jan-Mar, Nov-Dec, 17:00-20:00)
+• Annual Exclusion: Top 10 peaks per month excluded before determining annual
+
+SPECIAL PROVISIONS
+• Mobile load discount: 7% reduction on peak (monthly + yearly) and contracted
+• aFRR/mFRR correction: If Elia activates balancing affecting peak, it's corrected
+
+
+--------------------------------------------------------------------------------
+3.2 FLUVIUS (DSO Flanders)
+--------------------------------------------------------------------------------
+
+Fluvius operates in 8 Flemish regions with both offtake and injection fees.
+No yearly peak fee exists.
+
+UNIVERSAL FEES (All Regions)
+--------------------------------------------------------------------------------
+Fee Type                    Offtake           Injection
+--------------------------------------------------------------------------------
+Fixed (data management)     0.05765 k€/year   0.05765 k€/year
+Volumetric (injection)      -                 0.001751 k€/MWh
+
+REGION-SPECIFIC OFFTAKE RATES (sample - Midden-Vlaanderen)
+--------------------------------------------------------------------------------
+Voltage    Connection   Contracted    Peak Mo.      Volumetric
+                        (/MVA/y)      (/MW/y)       (/MWh)
+--------------------------------------------------------------------------------
+26-36 kV   Post         30.90047      43.182926     0.000257
+26-36 kV   Grid         14.684942     21.964663     0.003705
+1-26 kV    Post         30.90047      43.182926     0.000257
+1-26 kV    Grid         35.178839     50.453059     0.003788
+
+ALL FLUVIUS REGIONS (26-36 kV rates, k€)
+--------------------------------------------------------------------------------
+Region              Conn.   Contracted   Peak Mo.     Volumetric
+--------------------------------------------------------------------------------
+Antwerpen           Post    41.641265    56.845009    0.000487
+Antwerpen           Grid    33.658267    54.303574    0.004137
+Halle-Vilvoorde     Post    25.93092     57.44691     0.000402
+Halle-Vilvoorde     Grid    37.111009    60.139519    0.005056
+Kempen              Post    28.621745    39.187121    0.000394
+Kempen              Grid    6.837355     9.633469     0.007999
+Limburg             Post    25.644223    32.240684    0.000398
+Limburg             Grid    30.406199    32.240684    0.005849
+Midden-Vlaanderen   Post    30.90047     43.182926    0.000257
+Midden-Vlaanderen   Grid    14.684942    21.964663    0.003705
+West                Post    35.676542    46.19853     0.000429
+West                Grid    41.6436      59.761405    0.004224
+Zenne-Dijle         Post    37.965538    47.964726    0.000395
+Zenne-Dijle         Grid    40.684499    59.85696     0.004225
+Imewo               Post    39.477806    46.471823    0.000376
+Imewo               Grid    36.105918    54.228899    0.003923
+
+ℹ INFO: Maximum tariff cap: 0.0596319 k€/MWh (excludes exceeding capacity, 
+reactive, data management). Transit tariffs: 75% of standard.
+
+
+--------------------------------------------------------------------------------
+3.3 SIBELGA (DSO Brussels)
+--------------------------------------------------------------------------------
+
+Sibelga operates in Brussels Capital Region. 
+Only OFFTAKE fees apply. Uses E1 degression factor.
+
+⚠ CRITICAL: E1 Degression Factor
+Sibelga applies a degression factor to peak demand billing. 
+For 1 MW peak, E1 = 0.803714. This factor varies with load level.
+
+    Billable Peak = Measured Peak × E1 (for 1 MW: E1 = 0.803714)
+
+TARIFF RATES
+--------------------------------------------------------------------------------
+Connection      Fixed       Peak Mo.        Vol+Other
+                (/year)     (/MW/y)         (/MWh)
+--------------------------------------------------------------------------------
+Main Supply     0.54311 k€  46.02239 k€     0.034559 k€
+Backup Supply   0.54311 k€  23.011195 k€    0.034559 k€
+
+VOLUMETRIC SPLIT
+• HI hours: 0.0044466 k€/MWh
+• LO hours: 0.0026680 k€/MWh  
+• Average: 0.003803 k€/MWh
+• Other (PSO/surcharges): 0.030756 k€/MWh
+• Combined: 0.034559 k€/MWh
+• LO hours: Mon-Fri 22:00-07:00, Weekends & Holidays 24h
+
+
+--------------------------------------------------------------------------------
+3.4 RESA (DSO Wallonia)
+--------------------------------------------------------------------------------
+
+Resa operates in parts of Wallonia. Both offtake and injection fees apply.
+
+BILLABLE PEAK DETERMINATION
+• Monthly Peak = (2/3) × 11th highest quarter-hour peak of the month
+• Annual Peak = (1/3) × Highest monthly peak from past 12 months
+
+ℹ INFO: The 2/3 and 1/3 factors define how to DETERMINE the billable peak 
+from measurements. The fee calculation then uses: Fee = Rate × Billable_Peak.
+For BESS, assume full power utilization, so input the rated power directly.
+
+OFFTAKE RATES (k€)
+--------------------------------------------------------------------------------
+Type    Fixed    Peak Mo.     Peak Yr.    Volumetric   Other
+        (/y)     (/MW/y)      (/MW/y)     (/MWh)       (/MWh)
+--------------------------------------------------------------------------------
+Post    0.90655  3.906782     0.081391    0.000392     0.004546
+Grid    0.79643  30.933466    0.644447    0.004989     0.007867
+
+INJECTION RATES (k€)
+--------------------------------------------------------------------------------
+Type    Fixed (/year)    Contracted (/MVA/y)
+--------------------------------------------------------------------------------
+Post    0.87758          0.470967
+Grid    0.66523          0.043899
+
+
+--------------------------------------------------------------------------------
+3.5 ORES (DSO Wallonia)
+--------------------------------------------------------------------------------
+
+Ores operates in parts of Wallonia. 
+Same peak determination rules as Resa (2/3 monthly, 1/3 yearly).
+
+OFFTAKE RATES (k€)
+--------------------------------------------------------------------------------
+Type    Fixed    Peak Mo.     Peak Yr.    Volumetric   Other
+        (/y)     (/MW/y)      (/MW/y)     (/MWh)       (/MWh)
+--------------------------------------------------------------------------------
+Post    0.87569  3.089399     0.064362    0.000129     0.005017
+Grid    0.63734  22.355108    0.465731    0.004032     0.008584
+
+INJECTION RATES (k€) - Same as Resa
+--------------------------------------------------------------------------------
+Type    Fixed (/year)    Contracted (/MVA/y)
+--------------------------------------------------------------------------------
+Post    0.87758          0.470967
+Grid    0.66523          0.043899
+
+
+================================================================================
+4. BESS EXEMPTIONS
+================================================================================
+
+Exemption multipliers reduce specific fee components.
+Multiplier of 0 = fully exempt, 1 = no exemption.
+
+--------------------------------------------------------------------------------
+4.1 ELIA - 100% Exemption (10 years)
+--------------------------------------------------------------------------------
+Eligibility: New storage facilities commissioned after July 1, 2018
+
+Offtake Fee          Mult.   Effect
+--------------------------------------------------------------------------------
+Fixed                1.00    No exemption
+Contracted           1.00    No exemption
+Peak Monthly         0.00    100% EXEMPT
+Peak Yearly          0.00    100% EXEMPT
+Volumetric           0.00    100% EXEMPT
+Other                0.00    100% EXEMPT
+
+(Elia has no injection fees)
+
+
+--------------------------------------------------------------------------------
+4.2 FLUVIUS - 80% Reduction + Volumetric Exemption
+--------------------------------------------------------------------------------
+
+Offtake Fee          Mult.   Injection Fee     Mult.   Effect
+--------------------------------------------------------------------------------
+Fixed                1.00    Fixed             1.00    No exemption
+Contracted           0.20    (N/A)             -       80% reduction
+Peak Monthly         0.20    (N/A)             -       80% reduction
+(No Peak Yearly)     -       (N/A)             -       -
+Volumetric           0.00    Volumetric        1.00    Offtake exempt
+Other                0.00    (N/A)             -       100% exempt
+
+
+--------------------------------------------------------------------------------
+4.3 SIBELGA - No BESS Exemptions
+--------------------------------------------------------------------------------
+⚠ All multipliers = 1.00. BESS pays 100% of standard rates in Brussels.
+
+
+--------------------------------------------------------------------------------
+4.4 RESA - Full Injection Exemption
+--------------------------------------------------------------------------------
+
+Offtake Fee          Mult.   Injection Fee     Mult.   Effect
+--------------------------------------------------------------------------------
+Fixed                1.00    Fixed             0.00    Injection exempt
+Contracted (N/A)     -       Contracted        0.00    Injection exempt
+Peak Monthly         1.00    (N/A)             -       No exemption
+Peak Yearly          1.00    (N/A)             -       No exemption
+Volumetric           1.00    (N/A)             -       No exemption
+Other                1.00    (N/A)             -       No exemption
+
+
+--------------------------------------------------------------------------------
+4.5 ORES - Net Energy + Injection Exemption
+--------------------------------------------------------------------------------
+
+Offtake Fee          Mult.   Injection Fee     Mult.   Effect
+--------------------------------------------------------------------------------
+Fixed                1.00    Fixed             0.00    Injection exempt
+Contracted (N/A)     -       Contracted        0.00    Injection exempt
+Peak Monthly         1.00    (N/A)             -       No exemption
+Peak Yearly          1.00    (N/A)             -       No exemption
+Volumetric           0.15    (N/A)             -       85% reduction*
+Other                0.15    (N/A)             -       85% reduction*
+
+*Ores: Volumetric/Other based on NET energy (Offtake - Injection) over 
+calendar year. Correction processed in January Y+1.
+
+
+================================================================================
+5. VERIFIED CALCULATION EXAMPLE
+================================================================================
+
+1 MW / 2 MWh BESS on Elia 110-380 kV, 1.5 cycles/day, 88% round-trip efficiency
+
+--------------------------------------------------------------------------------
+5.1 ENERGY CALCULATION
+--------------------------------------------------------------------------------
+Parameter              Formula                  Value
+--------------------------------------------------------------------------------
+Discharge Energy       1 × 2 × 1.5 × 365       1,095 MWh/y
+One-Way Efficiency     √0.88                    0.9381
+Offtake (charging)     1,095 ÷ 0.9381          1,167.3 MWh/y
+Injection (disch.)     1,095 × 0.9381          1,027.2 MWh/y
+Peak Demand            = BESS Power             1 MW
+Contracted Capacity    = BESS Power             1 MVA
+
+--------------------------------------------------------------------------------
+5.2 FEE CALCULATION (Without Exemptions)
+--------------------------------------------------------------------------------
+Component              Calculation              Rate       Cost (k€/y)
+--------------------------------------------------------------------------------
+Offtake Contracted     7.5485 × 1 MVA          7.5485     7.549
+Offtake Peak Monthly   4.74 × 1 MW             4.74       4.740
+Offtake Peak Yearly    9.826 × 1 MW            9.826      9.826
+Offtake Volumetric     0.002595 × 1,167.3 MWh  0.002595   3.029
+--------------------------------------------------------------------------------
+TOTAL                                                      25.14
+
+--------------------------------------------------------------------------------
+5.3 WITH BESS EXEMPTIONS
+--------------------------------------------------------------------------------
+Component              Before    Mult.    After     Savings
+--------------------------------------------------------------------------------
+Offtake Contracted     7.549     1.00     7.549     0
+Offtake Peak Monthly   4.740     0.00     0.000     4.740
+Offtake Peak Yearly    9.826     0.00     0.000     9.826
+Offtake Volumetric     3.029     0.00     0.000     3.029
+--------------------------------------------------------------------------------
+TOTAL                  25.14     -        7.55      17.59
+
+✓ BESS Exemption Savings: 17.59 k€/year (70% reduction)
+
+
+================================================================================
+6. COSTS NOT INCLUDED
+================================================================================
+
+1. Reactive energy fees (consumption/injection beyond power factor limits)
+2. Exceeding capacity penalties (using more than contracted capacity)
+3. Imbalance compensation tariffs (Elia)
+4. Market integration fees (Elia)
+5. One-time connection fees
+6. VAT (21% in Belgium) - all values exclude VAT
+
+
+================================================================================
+7. DATA SOURCES
+================================================================================
+
+• Elia: Tariffs 2024-2027 regulatory period
+• Fluvius: Tariffs 2026 (Offtake & Injection)
+• Sibelga: Tariff 2026
+• Resa/Ores: Tariff 2026 (Offtake & Injection)
+
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+This document is for indicative purposes only. Actual grid fees may vary based 
+on contractual arrangements, regulatory changes, and connection characteristics. 
+Always verify with the relevant operator for binding tariff information.
+
+================================================================================
+Flexcity - January 2026 - Internal Use Only
+================================================================================

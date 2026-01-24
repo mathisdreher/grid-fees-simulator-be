@@ -174,7 +174,10 @@ async function handleSubmit(e) {
         if (result.error) {
             showError(result.error);
         } else {
-            displayResults(result);
+            // Store result globally for enhancements
+            window.lastCalculationResult = result;
+            window.lastCalculationParams = formData;
+            displayResults(result, formData);
         }
     } catch (error) {
         console.error('Calculation error:', error);
@@ -185,7 +188,7 @@ async function handleSubmit(e) {
 }
 
 // Display calculation results
-function displayResults(result) {
+function displayResults(result, params) {
     // Update totals
     document.getElementById('total-amount').textContent = formatCurrency(result.total);
     document.getElementById('injection-total').textContent = formatCurrency(result.total_injection);
@@ -233,6 +236,11 @@ function displayResults(result) {
     // Show results
     document.getElementById('results').classList.add('show');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Generate insights if function is available
+    if (typeof generateInsights === 'function' && params) {
+        generateInsights(result, params);
+    }
 }
 
 // Show error message

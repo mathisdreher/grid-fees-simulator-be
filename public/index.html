@@ -526,14 +526,71 @@
             .bess-toggle {
                 font-size: 1rem;
             }
+
+            header > div {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .language-selector {
+                width: 100%;
+            }
+        }
+
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-select {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 160px;
+        }
+
+        .lang-select:hover {
+            border-color: #DC143C;
+            background: #f8f9fa;
+        }
+
+        .lang-select:focus {
+            outline: none;
+            border-color: #DC143C;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        header h1 {
+            margin-bottom: 5px;
+        }
+
+        header p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔌 Belgian Grid Fees Calculator</h1>
-            <p>Calculate network tariffs for Belgium 2026</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <h1 id="page-title">🔌 Belgian Grid Fees Calculator</h1>
+                    <p id="page-subtitle">Calculate network tariffs for Belgium 2026</p>
+                </div>
+                <div class="language-selector">
+                    <select id="language-selector" onchange="changeLanguage(this.value)" class="lang-select">
+                        <option value="en">🇬🇧 English</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="nl">🇳🇱 Nederlands</option>
+                    </select>
+                </div>
+            </div>
         </header>
 
         <!-- BESS Energy Calculator -->
@@ -541,8 +598,8 @@
             <div class="form-section">
                 <div class="bess-calculator">
                     <button type="button" id="bess-calculator-toggle" class="bess-toggle">
-                        <span class="toggle-icon">▶</span> BESS Energy Calculator
-                        <span style="font-size: 0.9rem; opacity: 0.8; margin-left: 10px;">Calculate offtake & injection from BESS parameters</span>
+                        <span class="toggle-icon">▶</span> <span id="bess-calc-title">BESS Energy Calculator</span>
+                        <span style="font-size: 0.9rem; opacity: 0.8; margin-left: 10px;" id="bess-calc-subtitle">Calculate offtake & injection from BESS parameters</span>
                     </button>
 
                     <div class="bess-calculator-panel" id="bess-calculator-panel">
@@ -566,30 +623,30 @@
                         </div>
 
                         <div class="bess-results" id="bess_results">
-                            <h4 style="margin-top: 20px; margin-bottom: 15px;">Calculated Energy Values:</h4>
+                            <h4 style="margin-top: 20px; margin-bottom: 15px;" id="bess-calc-values-title">Calculated Energy Values:</h4>
                             <div class="bess-results-grid">
                                 <div class="bess-result-item">
-                                    <span class="bess-result-label">Discharge Energy:</span>
-                                    <span class="bess-result-value"><strong id="bess_discharge">0</strong> MWh/year</span>
+                                    <span class="bess-result-label" id="bess-discharge-label">Discharge Energy:</span>
+                                    <span class="bess-result-value"><strong id="bess_discharge">0</strong> <span class="unit-mwh-year">MWh/year</span></span>
                                 </div>
                                 <div class="bess-result-item">
-                                    <span class="bess-result-label">Offtake (Charging):</span>
-                                    <span class="bess-result-value"><strong id="bess_offtake">0</strong> MWh/year</span>
+                                    <span class="bess-result-label" id="bess-offtake-label">Offtake (Charging):</span>
+                                    <span class="bess-result-value"><strong id="bess_offtake">0</strong> <span class="unit-mwh-year">MWh/year</span></span>
                                 </div>
                                 <div class="bess-result-item">
-                                    <span class="bess-result-label">Injection (Discharging):</span>
-                                    <span class="bess-result-value"><strong id="bess_injection">0</strong> MWh/year</span>
+                                    <span class="bess-result-label" id="bess-injection-label">Injection (Discharging):</span>
+                                    <span class="bess-result-value"><strong id="bess_injection">0</strong> <span class="unit-mwh-year">MWh/year</span></span>
                                 </div>
                                 <div class="bess-result-item">
-                                    <span class="bess-result-label">Energy Losses:</span>
-                                    <span class="bess-result-value"><strong id="bess_losses">0</strong> MWh/year</span>
+                                    <span class="bess-result-label" id="bess-losses-label">Energy Losses:</span>
+                                    <span class="bess-result-value"><strong id="bess_losses">0</strong> <span class="unit-mwh-year">MWh/year</span></span>
                                 </div>
                                 <div class="bess-result-item">
-                                    <span class="bess-result-label">One-Way Efficiency:</span>
-                                    <span class="bess-result-value"><strong id="bess_efficiency_oneway">0</strong> %</span>
+                                    <span class="bess-result-label" id="bess-efficiency-label">One-Way Efficiency:</span>
+                                    <span class="bess-result-value"><strong id="bess_efficiency_oneway">0</strong> <span class="unit-percent">%</span></span>
                                 </div>
                             </div>
-                            <p style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 8px; font-size: 0.9rem;">
+                            <p style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 8px; font-size: 0.9rem;" id="bess-autofill-notice">
                                 ℹ️ These values have been automatically filled in the form below
                             </p>
                         </div>
@@ -661,7 +718,7 @@
                         <label for="is_bess">Battery Energy Storage System (BESS) - Grid Fees Exempted</label>
                     </div>
 
-                    <button type="submit" class="btn">Calculate Grid Fees</button>
+                    <button type="submit" class="btn" id="calculate-btn">Calculate Grid Fees</button>
                 </form>
 
                 <div class="loading" id="loading">
@@ -674,23 +731,23 @@
 
             <div class="results-section" id="results">
                 <div class="total-box">
-                    <h2>Total Annual Grid Fees (excl. VAT)</h2>
+                    <h2 id="results-title">Total Annual Grid Fees (excl. VAT)</h2>
                     <div class="amount" id="total-amount">€0</div>
                 </div>
 
                 <div class="summary-grid">
                     <div class="summary-card">
-                        <h3>Injection Fees</h3>
+                        <h3 id="injection-fees-label">Injection Fees</h3>
                         <div class="value" id="injection-total">€0</div>
                     </div>
                     <div class="summary-card">
-                        <h3>Offtake Fees</h3>
+                        <h3 id="offtake-fees-label">Offtake Fees</h3>
                         <div class="value" id="offtake-total">€0</div>
                     </div>
                 </div>
 
                 <div class="breakdown">
-                    <h3>Fee Breakdown</h3>
+                    <h3 id="breakdown-title">Fee Breakdown</h3>
                     <table class="breakdown-table" id="breakdown-table">
                         <thead>
                             <tr>
@@ -730,8 +787,8 @@
         <div class="main-card comparison-section" id="comparison-section">
             <div class="form-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">Scenario Comparison</h2>
-                    <button type="button" onclick="clearComparison()" class="btn btn-small btn-danger">Clear All</button>
+                    <h2 style="margin: 0;" id="comparison-title">Scenario Comparison</h2>
+                    <button type="button" onclick="clearComparison()" class="btn btn-small btn-danger" id="clear-comparison-btn">Clear All</button>
                 </div>
 
                 <div id="comparison-insight"></div>
@@ -761,11 +818,12 @@
         </div>
 
         <footer>
-            <p>Created by <a href="https://www.flexcity.energy" target="_blank" rel="noopener">Flexcity</a> - Energy Flexibility Services</p>
-            <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.8;">For informational purposes only. Always verify calculations with official DSO/TSO documentation.</p>
+            <p><span id="footer-created-by">Created by</span> <a href="https://www.flexcity.energy" target="_blank" rel="noopener">Flexcity</a> - Energy Flexibility Services</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.8;" id="footer-disclaimer">For informational purposes only. Always verify calculations with official DSO/TSO documentation.</p>
         </footer>
     </div>
 
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
     <script src="enhancements.js"></script>
 </body>

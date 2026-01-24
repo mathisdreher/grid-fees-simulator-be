@@ -29,6 +29,8 @@ function calculateBESSEnergy() {
     const efficiency = parseFloat(document.getElementById('bess_efficiency').value) || 0;
 
     if (power > 0 && duration > 0 && cycles > 0 && efficiency > 0) {
+        const translate = typeof window.t === 'function' ? window.t : (key) => key;
+
         // Calculate derived values
         const discharge = power * duration * cycles * 365;
         const oneWayEff = Math.sqrt(efficiency / 100);
@@ -42,6 +44,12 @@ function calculateBESSEnergy() {
         document.getElementById('bess_injection').textContent = injection.toFixed(1);
         document.getElementById('bess_losses').textContent = losses.toFixed(1);
         document.getElementById('bess_efficiency_oneway').textContent = (oneWayEff * 100).toFixed(2);
+
+        // Update units
+        const unitElements = document.querySelectorAll('.unit-mwh-year');
+        unitElements.forEach(el => el.textContent = translate('mwhYear'));
+        const unitPercent = document.querySelectorAll('.unit-percent');
+        unitPercent.forEach(el => el.textContent = translate('percent'));
 
         // Auto-fill main form
         document.getElementById('offtake_energy').value = offtake.toFixed(2);
@@ -137,16 +145,16 @@ function generateInsights(result, params) {
 
     const insights = [];
 
+    // Get translation function
+    const translate = typeof window.t === 'function' ? window.t : (key) => key;
+
     // BESS savings insight
     if (params.is_bess && result.total > 0) {
-        // Calculate what it would cost without BESS
-        const withoutBessParams = {...params, is_bess: false};
-        // We'd need to call the API again, but for now we can estimate
         insights.push({
             type: 'success',
             icon: '💰',
-            title: 'BESS Exemptions Active',
-            message: `You're benefiting from BESS grid fee exemptions. Estimated savings compared to standard tariffs.`
+            title: translate('bessExemptionsActive'),
+            message: translate('bessExemptionsSavings')
         });
     }
 
@@ -156,8 +164,8 @@ function generateInsights(result, params) {
         insights.push({
             type: 'warning',
             icon: '⚠️',
-            title: 'High Cost Per MWh',
-            message: `Your grid fees are €${costPerMWh.toFixed(2)}/MWh. Consider optimizing peak demand to reduce costs.`
+            title: translate('highCostWarning'),
+            message: translate('highCostMessage', { cost: costPerMWh.toFixed(2) })
         });
     }
 
@@ -167,21 +175,23 @@ function generateInsights(result, params) {
         .reduce((sum, [_, fee]) => sum + fee.total, 0);
 
     if (peakCosts > result.total * 0.3) {
+        const percentage = (peakCosts / result.total * 100).toFixed(0);
         insights.push({
             type: 'info',
             icon: '📊',
-            title: 'Peak Demand Represents ' + ((peakCosts / result.total * 100).toFixed(0)) + '% of Costs',
-            message: 'Reducing peak demand could significantly lower your grid fees. Consider load shifting or demand response strategies.'
+            title: translate('peakDemandTitle', { percentage }),
+            message: translate('peakDemandMessage')
         });
     }
 
     // Injection vs Offtake balance
     if (params.injection_energy > params.offtake_energy * 0.8) {
+        const percentage = (params.injection_energy / params.offtake_energy * 100).toFixed(0);
         insights.push({
             type: 'info',
             icon: '🔄',
-            title: 'High Injection Ratio',
-            message: 'Your injection is ' + ((params.injection_energy / params.offtake_energy * 100).toFixed(0)) + '% of offtake. Make sure you\'re benefiting from available exemptions.'
+            title: translate('highInjectionTitle'),
+            message: translate('highInjectionMessage', { percentage })
         });
     }
 
@@ -192,11 +202,12 @@ function generateInsights(result, params) {
 
     if (largestComponent) {
         const percentage = (largestComponent[1].total / result.total * 100).toFixed(0);
+        const amount = (largestComponent[1].total * 1000).toFixed(2);
         insights.push({
             type: 'info',
             icon: '🎯',
-            title: `${largestComponent[0]} is Your Largest Cost (${percentage}%)`,
-            message: `This component costs €${(largestComponent[1].total * 1000).toFixed(2)}/year.`
+            title: translate('largestComponentTitle', { component: largestComponent[0], percentage }),
+            message: translate('largestComponentMessage', { amount })
         });
     }
 
@@ -240,8 +251,10 @@ function updateComparisonTable() {
     const tbody = document.getElementById('comparison-tbody');
     if (!tbody) return;
 
+    const translate = typeof window.t === 'function' ? window.t : (key) => key;
+
     if (savedScenarios.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">No scenarios saved yet. Click "Save for Comparison" after calculating.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">${translate('noScenarios')}</td></tr>`;
         return;
     }
 
@@ -264,12 +277,18 @@ function updateComparisonTable() {
         const mostExpensive = savedScenarios.reduce((max, s) => s.result.total > max.result.total ? s : max);
         const savings = (mostExpensive.result.total - cheapest.result.total) * 1000;
 
+        const bestOptionTitle = translate('bestOption', { name: cheapest.name });
+        const bestOptionMessage = translate('bestOptionSavings', {
+            amount: savings.toFixed(2),
+            other: mostExpensive.name
+        });
+
         document.getElementById('comparison-insight').innerHTML = `
             <div class="insight-card success">
                 <div class="insight-icon">💡</div>
                 <div class="insight-content">
-                    <h4>Best Option: ${cheapest.name}</h4>
-                    <p>Saves €${savings.toFixed(2)}/year compared to ${mostExpensive.name}</p>
+                    <h4>${bestOptionTitle}</h4>
+                    <p>${bestOptionMessage}</p>
                 </div>
             </div>
         `;

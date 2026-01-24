@@ -58,23 +58,25 @@ function handleDSOChange(e) {
     const regionGroup = document.getElementById('region-group');
     const regionSelect = document.getElementById('region');
     const voltageSelect = document.getElementById('voltage');
+    const connectionGroup = document.getElementById('connection-group');
     const connectionSelect = document.getElementById('connection_type');
-    
+
     // Clear dependent dropdowns
     voltageSelect.innerHTML = '<option value="">Select Voltage Level</option>';
     connectionSelect.innerHTML = '<option value="">Select Connection Type</option>';
     regionSelect.innerHTML = '<option value="">Select Region</option>';
-    
+
     if (!dso) {
         regionGroup.style.display = 'none';
+        connectionGroup.style.display = 'none';
         return;
     }
-    
+
     // Show region selector only for Fluvius
     if (dso === 'Fluvius') {
         regionGroup.style.display = 'block';
         regionSelect.required = true;
-        
+
         // Populate regions
         optionsData.regions.forEach(region => {
             const option = document.createElement('option');
@@ -86,7 +88,7 @@ function handleDSOChange(e) {
         regionGroup.style.display = 'none';
         regionSelect.required = false;
     }
-    
+
     // Populate voltage levels
     if (optionsData.voltage_levels[dso]) {
         optionsData.voltage_levels[dso].forEach(voltage => {
@@ -101,21 +103,38 @@ function handleDSOChange(e) {
 // Handle voltage level change
 function handleVoltageChange(e) {
     const dso = document.getElementById('dso_tso').value;
+    const connectionGroup = document.getElementById('connection-group');
     const connectionSelect = document.getElementById('connection_type');
-    
+
     // Clear connection type dropdown
     connectionSelect.innerHTML = '<option value="">Select Connection Type</option>';
-    
-    if (!dso) return;
-    
-    // Populate connection types
-    if (optionsData.connection_types[dso]) {
+
+    if (!dso) {
+        connectionGroup.style.display = 'none';
+        connectionSelect.required = false;
+        return;
+    }
+
+    // Check if this operator has connection types
+    const hasConnectionTypes = optionsData.connection_types[dso] && optionsData.connection_types[dso].length > 0;
+
+    if (hasConnectionTypes) {
+        // Show connection type field and make it required
+        connectionGroup.style.display = 'block';
+        connectionSelect.required = true;
+
+        // Populate connection types
         optionsData.connection_types[dso].forEach(type => {
             const option = document.createElement('option');
             option.value = type;
             option.textContent = type;
             connectionSelect.appendChild(option);
         });
+    } else {
+        // Hide connection type field for operators that don't need it (like Elia)
+        connectionGroup.style.display = 'none';
+        connectionSelect.required = false;
+        connectionSelect.value = ''; // Clear value
     }
 }
 

@@ -317,6 +317,216 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        /* BESS Calculator Styles */
+        .bess-calculator {
+            margin-bottom: 20px;
+        }
+
+        .bess-toggle {
+            width: 100%;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .bess-toggle:hover {
+            background: #e9ecef;
+            border-color: #DC143C;
+        }
+
+        .toggle-icon {
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+
+        .bess-calculator-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-top: 0;
+        }
+
+        .bess-calculator-panel.show {
+            max-height: 1000px;
+            margin-top: 20px;
+        }
+
+        .bess-results {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .bess-results.show {
+            display: block;
+        }
+
+        .bess-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .bess-result-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .bess-result-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .bess-result-value {
+            font-size: 1.1rem;
+            color: #495057;
+        }
+
+        .bess-result-value strong {
+            color: #DC143C;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #3d4349 100%);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        /* Insights Section */
+        .insights-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .insights-section.show {
+            display: block;
+        }
+
+        .insight-card {
+            display: flex;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+        }
+
+        .insight-card.success {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .insight-card.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .insight-card.info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .insight-content {
+            flex: 1;
+        }
+
+        .insight-content h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        .insight-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .comparison-section.show {
+            display: block;
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+        }
+
+        /* Print Styles */
+        @media print {
+            .form-section, .action-buttons, footer, .btn {
+                display: none !important;
+            }
+
+            .results-section {
+                display: block !important;
+            }
+
+            .main-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+            .bess-toggle {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -325,6 +535,68 @@
             <h1>🔌 Belgian Grid Fees Calculator</h1>
             <p>Calculate network tariffs for Belgium 2026</p>
         </header>
+
+        <!-- BESS Energy Calculator -->
+        <div class="main-card" style="margin-bottom: 20px;">
+            <div class="form-section">
+                <div class="bess-calculator">
+                    <button type="button" id="bess-calculator-toggle" class="bess-toggle">
+                        <span class="toggle-icon">▶</span> BESS Energy Calculator
+                        <span style="font-size: 0.9rem; opacity: 0.8; margin-left: 10px;">Calculate offtake & injection from BESS parameters</span>
+                    </button>
+
+                    <div class="bess-calculator-panel" id="bess-calculator-panel">
+                        <div class="form-grid" id="bess-form">
+                            <div class="form-group">
+                                <label for="bess_power">BESS Power (MW)</label>
+                                <input type="number" id="bess_power" step="0.1" min="0" value="1" placeholder="1.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="bess_duration">Duration (hours)</label>
+                                <input type="number" id="bess_duration" step="0.1" min="0" value="2" placeholder="2.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="bess_cycles">Cycles per Day</label>
+                                <input type="number" id="bess_cycles" step="0.1" min="0" value="1.5" placeholder="1.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="bess_efficiency">Round-Trip Efficiency (%)</label>
+                                <input type="number" id="bess_efficiency" step="0.1" min="0" max="100" value="88" placeholder="88">
+                            </div>
+                        </div>
+
+                        <div class="bess-results" id="bess_results">
+                            <h4 style="margin-top: 20px; margin-bottom: 15px;">Calculated Energy Values:</h4>
+                            <div class="bess-results-grid">
+                                <div class="bess-result-item">
+                                    <span class="bess-result-label">Discharge Energy:</span>
+                                    <span class="bess-result-value"><strong id="bess_discharge">0</strong> MWh/year</span>
+                                </div>
+                                <div class="bess-result-item">
+                                    <span class="bess-result-label">Offtake (Charging):</span>
+                                    <span class="bess-result-value"><strong id="bess_offtake">0</strong> MWh/year</span>
+                                </div>
+                                <div class="bess-result-item">
+                                    <span class="bess-result-label">Injection (Discharging):</span>
+                                    <span class="bess-result-value"><strong id="bess_injection">0</strong> MWh/year</span>
+                                </div>
+                                <div class="bess-result-item">
+                                    <span class="bess-result-label">Energy Losses:</span>
+                                    <span class="bess-result-value"><strong id="bess_losses">0</strong> MWh/year</span>
+                                </div>
+                                <div class="bess-result-item">
+                                    <span class="bess-result-label">One-Way Efficiency:</span>
+                                    <span class="bess-result-value"><strong id="bess_efficiency_oneway">0</strong> %</span>
+                                </div>
+                            </div>
+                            <p style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 8px; font-size: 0.9rem;">
+                                ℹ️ These values have been automatically filled in the form below
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="main-card">
             <div class="form-section">
@@ -433,6 +705,58 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" id="save-scenario-btn" class="btn btn-secondary">
+                        💾 Save for Comparison
+                    </button>
+                    <button type="button" id="export-csv-btn" class="btn btn-secondary">
+                        📊 Export to CSV
+                    </button>
+                    <button type="button" id="print-btn" class="btn btn-secondary">
+                        🖨️ Print Results
+                    </button>
+                </div>
+
+                <!-- Insights Section -->
+                <div class="insights-section" id="insights-container">
+                    <!-- Insights will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="main-card comparison-section" id="comparison-section">
+            <div class="form-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Scenario Comparison</h2>
+                    <button type="button" onclick="clearComparison()" class="btn btn-small btn-danger">Clear All</button>
+                </div>
+
+                <div id="comparison-insight"></div>
+
+                <div class="comparison-table-wrapper">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>BESS</th>
+                                <th>Total Cost</th>
+                                <th>Offtake</th>
+                                <th>Injection</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-tbody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: #999;">
+                                    No scenarios saved yet. Click "Save for Comparison" after calculating.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -443,5 +767,6 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="enhancements.js"></script>
 </body>
 </html>

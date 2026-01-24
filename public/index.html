@@ -771,14 +771,18 @@
                     <button type="button" id="export-csv-btn" class="btn btn-secondary">
                         📊 Export to CSV
                     </button>
-                    <button type="button" id="print-btn" class="btn btn-secondary">
-                        🖨️ Print Results
-                    </button>
                 </div>
 
                 <!-- Insights Section -->
                 <div class="insights-section" id="insights-container">
                     <!-- Insights will be dynamically populated -->
+                </div>
+
+                <!-- Storage Index Comparison Section -->
+                <div class="insights-section" id="storage-index-section" style="display: none;">
+                    <h3 style="margin-bottom: 20px; color: #495057;">📊 Storage Index Value Comparison</h3>
+                    <div id="storage-index-summary"></div>
+                    <div id="storage-index-details" style="margin-top: 20px;"></div>
                 </div>
             </div>
         </div>
@@ -823,6 +827,7 @@
         </footer>
     </div>
 
+    <script src="storage-index-data.js"></script>
     <script src="i18n.js"></script>
     <script src="app.js"></script>
     <script src="enhancements.js"></script>

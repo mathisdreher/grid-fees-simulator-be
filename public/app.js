@@ -241,6 +241,11 @@ function displayResults(result, params) {
     if (typeof generateInsights === 'function' && params) {
         generateInsights(result, params);
     }
+
+    // Generate Storage Index comparison if function is available
+    if (typeof compareStorageIndexToGridFees === 'function' && params) {
+        compareStorageIndexToGridFees(result, params);
+    }
 }
 
 // Show error message

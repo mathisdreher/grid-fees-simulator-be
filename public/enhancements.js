@@ -359,9 +359,6 @@ function exportToCSV(result, params) {
     URL.revokeObjectURL(url);
 }
 
-function printResults() {
-    window.print();
-}
 
 // Sensitivity Analysis
 function showSensitivityAnalysis(params) {
@@ -402,6 +399,128 @@ function closeSensitivityModal() {
     }
 }
 
+// Storage Index Comparison
+function compareStorageIndexToGridFees(result, params) {
+    const storageIndexSection = document.getElementById('storage-index-section');
+    const summaryDiv = document.getElementById('storage-index-summary');
+    const detailsDiv = document.getElementById('storage-index-details');
+
+    // Only show if BESS parameters are available
+    if (!params.is_bess || params.peak_monthly === 0) {
+        storageIndexSection.style.display = 'none';
+        return;
+    }
+
+    // Check if storage index data is available
+    if (typeof storageIndexData === 'undefined') {
+        console.warn('Storage Index data not loaded');
+        return;
+    }
+
+    const translate = typeof window.t === 'function' ? window.t : (key) => key;
+
+    // Get BESS parameters
+    const power = params.peak_monthly; // MW
+    const duration = parseFloat(document.getElementById('bess_duration')?.value) || 2; // hours
+    const cycles = parseFloat(document.getElementById('bess_cycles')?.value) || 1.5;
+    const efficiency = (parseFloat(document.getElementById('bess_efficiency')?.value) || 88) / 100;
+
+    // Calculate capturable Storage Index values
+    const capturableValues = storageIndexData.calculateCapturableValue(power, duration, cycles, efficiency);
+
+    // Get recent year average (last 12 months)
+    const recent12Months = capturableValues.slice(-12);
+    const avgMonthlyValue = recent12Months.reduce((sum, v) => sum + v.monthlyValue, 0) / 12;
+    const totalAnnualValue = avgMonthlyValue * 12;
+
+    // Grid fees (annual, in k€)
+    const gridFeesAnnual = result.total;
+
+    // Calculate comparison
+    const netValue = totalAnnualValue - gridFeesAnnual;
+    const valueRatio = gridFeesAnnual > 0 ? (totalAnnualValue / gridFeesAnnual * 100).toFixed(1) : 0;
+
+    // Create summary card
+    summaryDiv.innerHTML = `
+        <div class="insight-card ${netValue > 0 ? 'success' : 'warning'}">
+            <div class="insight-icon">${netValue > 0 ? '✅' : '⚠️'}</div>
+            <div class="insight-content">
+                <h4>Storage Index Value Analysis</h4>
+                <p>
+                    Based on recent 12-month average, your ${power.toFixed(1)} MW / ${duration}h BESS could capture approximately
+                    <strong>€${(totalAnnualValue * 1000).toFixed(0)}/year</strong> from energy arbitrage (Storage Index).
+                </p>
+                <p style="margin-top: 10px;">
+                    Annual Grid Fees: <strong>€${(gridFeesAnnual * 1000).toFixed(0)}</strong>
+                    ${params.is_bess ? '(with BESS exemptions applied)' : ''}
+                </p>
+                <p style="margin-top: 10px; font-size: 1.1em;">
+                    <strong>Net Value: ${netValue > 0 ? '+' : ''}€${(netValue * 1000).toFixed(0)}/year</strong>
+                    ${netValue > 0
+                        ? `(Storage Index value is ${valueRatio}% of grid fees, resulting in positive net value)`
+                        : `(Storage Index value is only ${valueRatio}% of grid fees)`
+                    }
+                </p>
+            </div>
+        </div>
+    `;
+
+    // Create monthly breakdown table
+    const tableHTML = `
+        <h4 style="margin-bottom: 15px; color: #495057;">Monthly Storage Index Values & Annualized Projections</h4>
+        <div class="comparison-table-wrapper">
+            <table class="breakdown-table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Duration</th>
+                        <th>Storage Index<br/>(k€/MW)</th>
+                        <th>Monthly Value<br/>(k€)</th>
+                        <th>If Annualized<br/>(k€/year)</th>
+                        <th>vs Grid Fees</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${capturableValues.slice(-24).map(v => {
+                        const annualizedNetValue = v.annualizedValue - gridFeesAnnual;
+                        const isPositive = annualizedNetValue > 0;
+                        return `
+                            <tr>
+                                <td>${v.month}</td>
+                                <td>${v.durationUsed}</td>
+                                <td>${v.storageIndex.toFixed(1)}</td>
+                                <td>€${(v.monthlyValue * 1000).toFixed(0)}</td>
+                                <td>€${(v.annualizedValue * 1000).toFixed(0)}</td>
+                                <td style="color: ${isPositive ? '#28a745' : '#dc3545'}; font-weight: 600;">
+                                    ${isPositive ? '+' : ''}€${(annualizedNetValue * 1000).toFixed(0)}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot style="font-weight: 700; background: #f8f9fa;">
+                    <tr>
+                        <td colspan="3">Recent 12-Month Average</td>
+                        <td>€${(avgMonthlyValue * 1000).toFixed(0)}</td>
+                        <td>€${(totalAnnualValue * 1000).toFixed(0)}</td>
+                        <td style="color: ${netValue > 0 ? '#28a745' : '#dc3545'};">
+                            ${netValue > 0 ? '+' : ''}€${(netValue * 1000).toFixed(0)}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <p style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 8px; font-size: 0.9rem;">
+            ℹ️ <strong>Note:</strong> Storage Index values are based on Clean Horizon data with ${(efficiency * 100).toFixed(0)}% round-trip efficiency and ${cycles} cycles/day.
+            "If Annualized" shows the annual value if each month's performance continued for a full year.
+            The comparison shows whether capturable value exceeds grid fees for that scenario.
+        </p>
+    `;
+
+    detailsDiv.innerHTML = tableHTML;
+    storageIndexSection.style.display = 'block';
+}
+
 // Initialize all enhancements
 function initEnhancements() {
     initBESSCalculator();
@@ -429,10 +548,6 @@ function initEnhancements() {
         });
     }
 
-    const printBtn = document.getElementById('print-btn');
-    if (printBtn) {
-        printBtn.addEventListener('click', printResults);
-    }
 
     const sensitivityBtn = document.getElementById('sensitivity-btn');
     if (sensitivityBtn) {

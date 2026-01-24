@@ -125,10 +125,10 @@ def calculate_grid_fees(params, data):
     injection_fees = {
         'Injection Fixed': (fee_config.get('Injection Fixed', 0) or 0, 1),
         'Injection Contracted': (fee_config.get('Injection Contracted', 0) or 0, contracted_capacity),
-        'Injection Peak Monthly': (fee_config.get('Injection Peak Monthly', 0) or 0, peak_monthly * 12),
+        'Injection Peak Monthly': (fee_config.get('Injection Peak Monthly', 0) or 0, peak_monthly),
         'Injection Peak Yearly': (fee_config.get('Injection Peak Yearly', 0) or 0, peak_yearly),
-        'Injection Volumetric': (fee_config.get('Injection Volumentric', 0) or 0, injection_energy),
-        'Injection Other': (fee_config.get('Injection Other', 0) or 0, 1)
+        'Injection Volumetric': (fee_config.get('Injection Volumetric', 0) or 0, injection_energy),
+        'Injection Other': (fee_config.get('Injection Other', 0) or 0, injection_energy)
     }
     
     for fee_type, (rate, quantity) in injection_fees.items():
@@ -147,10 +147,10 @@ def calculate_grid_fees(params, data):
     offtake_fees = {
         'Offtake Fixed': (fee_config.get('Offtake Fixed', 0) or 0, 1),
         'Offtake Contracted': (fee_config.get('Offtake Contracted', 0) or 0, contracted_capacity),
-        'Offtake Peak Monthly': (fee_config.get('Offtake Peak Monthly', 0) or 0, peak_monthly * 12),
+        'Offtake Peak Monthly': (fee_config.get('Offtake Peak Monthly', 0) or 0, peak_monthly),
         'Offtake Peak Yearly': (fee_config.get('Offtake Peak Yearly', 0) or 0, peak_yearly),
         'Offtake Volumetric': (fee_config.get('Offtake Volumetric', 0) or 0, offtake_energy),
-        'Offtake Other': (fee_config.get('Offtake Other', 0) or 0, offtake_energy if offtake_energy > 0 else 1)
+        'Offtake Other': (fee_config.get('Offtake Other', 0) or 0, offtake_energy)
     }
     
     for fee_type, (rate, quantity) in offtake_fees.items():

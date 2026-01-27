@@ -138,94 +138,179 @@ function createBreakdownChart(breakdown) {
     });
 }
 
-// Insights and Recommendations
-function generateInsights(result, params) {
-    const insightsContainer = document.getElementById('insights-container');
-    if (!insightsContainer) return;
+// Insights and Recommendations function removed per user request
 
-    const insights = [];
+// DSO Comparison Feature
+async function compareDSOs() {
+    const dsoComparisonSection = document.getElementById('dso-comparison-section');
+    const summaryDiv = document.getElementById('dso-comparison-summary');
+    const detailsDiv = document.getElementById('dso-comparison-details');
 
-    // Get translation function
-    const translate = typeof window.t === 'function' ? window.t : (key) => key;
+    // Get current form parameters
+    const baseParams = getFormData();
 
-    // BESS savings insight
-    if (params.is_bess && result.total > 0) {
-        insights.push({
-            type: 'success',
-            icon: '💰',
-            title: translate('bessExemptionsActive'),
-            message: translate('bessExemptionsSavings')
-        });
+    // DSOs to compare
+    const dsos = ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa'];
+
+    // Default configurations for each DSO
+    const dsoConfigs = {
+        'Elia': {
+            voltage_levels: ['110-380 kV', '30-70 kV', 'Transfo < 30 kV'],
+            region: null,
+            connection_type: null
+        },
+        'Fluvius': {
+            voltage_levels: ['26-36 kV', '1-26 kV'],
+            region: 'Antwerpen', // Default region
+            connection_type: 'Post' // Default connection type
+        },
+        'Sibelga': {
+            voltage_levels: ['1-26 kV'],
+            region: null,
+            connection_type: 'Main' // Default connection type
+        },
+        'Ores': {
+            voltage_levels: ['MT'],
+            region: null,
+            connection_type: 'Post' // Default connection type
+        },
+        'Resa': {
+            voltage_levels: ['MT'],
+            region: null,
+            connection_type: 'Post' // Default connection type
+        }
+    };
+
+    // Show loading state
+    summaryDiv.innerHTML = '<div style="text-align: center; padding: 20px;">Loading comparison data...</div>';
+    dsoComparisonSection.style.display = 'block';
+
+    // Fetch results for each DSO
+    const results = [];
+
+    for (const dso of dsos) {
+        const config = dsoConfigs[dso];
+
+        // For each voltage level of this DSO
+        for (const voltage of config.voltage_levels) {
+            const params = {
+                dso_tso: dso,
+                region: config.region || '',
+                voltage: voltage,
+                connection_type: config.connection_type || '',
+                offtake_energy: baseParams.offtake_energy,
+                injection_energy: baseParams.injection_energy,
+                peak_monthly: baseParams.peak_monthly,
+                peak_yearly: baseParams.peak_yearly,
+                contracted_capacity: baseParams.contracted_capacity,
+                is_bess: baseParams.is_bess
+            };
+
+            try {
+                const response = await fetch('/api/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    results.push({
+                        dso: dso,
+                        voltage: voltage,
+                        region: config.region,
+                        connection_type: config.connection_type,
+                        params: params,
+                        result: result
+                    });
+                }
+            } catch (error) {
+                console.error(`Error calculating for ${dso} - ${voltage}:`, error);
+            }
+        }
     }
 
-    // High cost warning
-    const costPerMWh = params.offtake_energy > 0 ? (result.total * 1000) / params.offtake_energy : 0;
-    if (costPerMWh > 50) {
-        insights.push({
-            type: 'warning',
-            icon: '⚠️',
-            title: translate('highCostWarning'),
-            message: translate('highCostMessage', { cost: costPerMWh.toFixed(2) })
-        });
-    }
+    // Sort results by total cost (ascending)
+    results.sort((a, b) => a.result.total - b.result.total);
 
-    // Peak demand optimization
-    const peakCosts = Object.entries(result.breakdown)
-        .filter(([name]) => name.includes('Peak'))
-        .reduce((sum, [_, fee]) => sum + fee.total, 0);
+    // Calculate cost per MWh for each result
+    results.forEach(r => {
+        r.costPerMWh = baseParams.offtake_energy > 0
+            ? (r.result.total * 1000) / baseParams.offtake_energy
+            : 0;
+    });
 
-    if (peakCosts > result.total * 0.3) {
-        const percentage = (peakCosts / result.total * 100).toFixed(0);
-        insights.push({
-            type: 'info',
-            icon: '📊',
-            title: translate('peakDemandTitle', { percentage }),
-            message: translate('peakDemandMessage')
-        });
-    }
+    // Find best and worst options
+    const bestOption = results[0];
+    const worstOption = results[results.length - 1];
+    const savings = (worstOption.result.total - bestOption.result.total) * 1000;
 
-    // Injection vs Offtake balance
-    if (params.injection_energy > params.offtake_energy * 0.8) {
-        const percentage = (params.injection_energy / params.offtake_energy * 100).toFixed(0);
-        insights.push({
-            type: 'info',
-            icon: '🔄',
-            title: translate('highInjectionTitle'),
-            message: translate('highInjectionMessage', { percentage })
-        });
-    }
-
-    // Component breakdown insight
-    const largestComponent = Object.entries(result.breakdown)
-        .filter(([_, fee]) => fee.total > 0)
-        .sort((a, b) => b[1].total - a[1].total)[0];
-
-    if (largestComponent) {
-        const percentage = (largestComponent[1].total / result.total * 100).toFixed(0);
-        const amount = (largestComponent[1].total * 1000).toFixed(2);
-        insights.push({
-            type: 'info',
-            icon: '🎯',
-            title: translate('largestComponentTitle', { component: largestComponent[0], percentage }),
-            message: translate('largestComponentMessage', { amount })
-        });
-    }
-
-    // Render insights
-    if (insights.length > 0) {
-        insightsContainer.innerHTML = insights.map(insight => `
-            <div class="insight-card ${insight.type}">
-                <div class="insight-icon">${insight.icon}</div>
-                <div class="insight-content">
-                    <h4>${insight.title}</h4>
-                    <p>${insight.message}</p>
-                </div>
+    // Create summary card
+    summaryDiv.innerHTML = `
+        <div class="insight-card success">
+            <div class="insight-icon">💡</div>
+            <div class="insight-content">
+                <h4>Best Option: ${bestOption.dso} - ${bestOption.voltage}</h4>
+                <p>
+                    Annual cost: <strong>€${(bestOption.result.total * 1000).toFixed(2)}</strong>
+                    (€${bestOption.costPerMWh.toFixed(2)}/MWh)
+                </p>
+                <p style="margin-top: 10px;">
+                    Potential savings vs most expensive option:
+                    <strong>€${savings.toFixed(2)}/year</strong>
+                </p>
             </div>
-        `).join('');
-        insightsContainer.classList.add('show');
-    } else {
-        insightsContainer.classList.remove('show');
-    }
+        </div>
+    `;
+
+    // Create comparison table
+    const tableHTML = `
+        <h4 style="margin-bottom: 15px; color: #495057;">Detailed DSO Comparison</h4>
+        <p style="margin-bottom: 15px; color: #6c757d; font-size: 0.9rem;">
+            ℹ️ This comparison uses the same energy usage and demand parameters across all DSOs.
+            Each DSO's standard voltage level and configuration is used.
+        </p>
+        <div class="comparison-table-wrapper">
+            <table class="breakdown-table">
+                <thead>
+                    <tr>
+                        <th>DSO/TSO</th>
+                        <th>Voltage Level</th>
+                        <th>Region</th>
+                        <th>Connection</th>
+                        <th>Annual Cost</th>
+                        <th>Cost per MWh</th>
+                        <th>vs Best Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map((r, index) => {
+                        const diff = (r.result.total - bestOption.result.total) * 1000;
+                        const isBest = index === 0;
+                        const isWorst = index === results.length - 1;
+
+                        return `
+                            <tr style="background-color: ${isBest ? '#d4edda' : isWorst ? '#f8d7da' : 'transparent'};">
+                                <td><strong>${r.dso}</strong></td>
+                                <td>${r.voltage}</td>
+                                <td>${r.region || '-'}</td>
+                                <td>${r.connection_type || '-'}</td>
+                                <td><strong>€${(r.result.total * 1000).toFixed(2)}</strong></td>
+                                <td>€${r.costPerMWh.toFixed(2)}</td>
+                                <td style="color: ${diff === 0 ? '#28a745' : '#dc3545'}; font-weight: 600;">
+                                    ${diff === 0 ? '✓ Best' : '+€' + diff.toFixed(2)}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    detailsDiv.innerHTML = tableHTML;
 }
 
 // Comparison Mode
@@ -554,6 +639,13 @@ function initEnhancements() {
         sensitivityBtn.addEventListener('click', () => {
             const params = getFormData();
             showSensitivityAnalysis(params);
+        });
+    }
+
+    const compareDSOsBtn = document.getElementById('compare-dsos-btn');
+    if (compareDSOsBtn) {
+        compareDSOsBtn.addEventListener('click', () => {
+            compareDSOs();
         });
     }
 }

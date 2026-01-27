@@ -243,6 +243,36 @@
             margin-left: 8px;
         }
 
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #495057;
+        }
+
+        .subsection-header {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Improved form grid spacing */
+        .form-grid + .form-grid {
+            margin-top: 0;
+        }
+
         .loading {
             display: none;
             text-align: center;
@@ -657,7 +687,11 @@
 
         <div class="main-card">
             <div class="form-section">
+                <h2 style="margin-bottom: 20px; color: #495057; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Grid Fees Calculator</h2>
+
                 <form id="calculator-form">
+                    <!-- Connection Configuration -->
+                    <h3 style="margin-top: 0; margin-bottom: 15px; color: #6c757d; font-size: 1.1rem;">📍 Connection Configuration</h3>
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="dso_tso">DSO/TSO *</label>
@@ -686,7 +720,11 @@
                                 <option value="">Select Connection Type</option>
                             </select>
                         </div>
+                    </div>
 
+                    <!-- Energy Consumption -->
+                    <h3 style="margin-top: 25px; margin-bottom: 15px; color: #6c757d; font-size: 1.1rem;">⚡ Energy Consumption</h3>
+                    <div class="form-grid">
                         <div class="form-group">
                             <label for="offtake_energy">Annual Offtake (MWh/year)</label>
                             <input type="number" id="offtake_energy" step="0.01" min="0" value="0" placeholder="0">
@@ -696,7 +734,11 @@
                             <label for="injection_energy">Annual Injection (MWh/year)</label>
                             <input type="number" id="injection_energy" step="0.01" min="0" value="0" placeholder="0">
                         </div>
+                    </div>
 
+                    <!-- Peak Demand & Capacity -->
+                    <h3 style="margin-top: 25px; margin-bottom: 15px; color: #6c757d; font-size: 1.1rem;">📊 Peak Demand & Capacity</h3>
+                    <div class="form-grid">
                         <div class="form-group">
                             <label for="peak_monthly">Monthly Peak Demand (MW)</label>
                             <input type="number" id="peak_monthly" step="0.01" min="0" value="0" placeholder="0">
@@ -764,25 +806,44 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button type="button" id="save-scenario-btn" class="btn btn-secondary">
-                        💾 Save for Comparison
-                    </button>
-                    <button type="button" id="export-csv-btn" class="btn btn-secondary">
-                        📊 Export to CSV
-                    </button>
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #dee2e6;">
+                    <h3 style="margin-bottom: 15px; color: #6c757d; font-size: 1.1rem;">🔧 Actions</h3>
+
+                    <!-- Primary Action -->
+                    <div style="margin-bottom: 15px;">
+                        <button type="button" id="compare-dsos-btn" class="btn btn-primary" style="width: 100%; font-size: 1.05rem; padding: 12px;">
+                            🔍 Compare Across All DSOs
+                        </button>
+                        <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #6c757d; text-align: center;">
+                            See how different operators compare for your usage profile
+                        </p>
+                    </div>
+
+                    <!-- Secondary Actions -->
+                    <div class="action-buttons">
+                        <button type="button" id="save-scenario-btn" class="btn btn-secondary">
+                            💾 Save for Comparison
+                        </button>
+                        <button type="button" id="export-csv-btn" class="btn btn-secondary">
+                            📊 Export to CSV
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Insights Section -->
-                <div class="insights-section" id="insights-container">
-                    <!-- Insights will be dynamically populated -->
-                </div>
+                <!-- Insights Section removed per user request -->
 
                 <!-- Storage Index Comparison Section -->
-                <div class="insights-section" id="storage-index-section" style="display: none;">
-                    <h3 style="margin-bottom: 20px; color: #495057;">📊 Storage Index Value Comparison</h3>
+                <div class="insights-section" id="storage-index-section" style="display: none; margin-top: 30px; padding-top: 30px; border-top: 2px solid #dee2e6;">
+                    <h3 style="margin-bottom: 20px; color: #495057; font-size: 1.3rem;">📊 Storage Index Value Comparison</h3>
                     <div id="storage-index-summary"></div>
                     <div id="storage-index-details" style="margin-top: 20px;"></div>
+                </div>
+
+                <!-- DSO Comparison Section -->
+                <div class="insights-section" id="dso-comparison-section" style="display: none; margin-top: 30px; padding-top: 30px; border-top: 2px solid #dee2e6;">
+                    <h3 style="margin-bottom: 20px; color: #495057; font-size: 1.3rem;">🔍 DSO Comparison Results</h3>
+                    <div id="dso-comparison-summary"></div>
+                    <div id="dso-comparison-details" style="margin-top: 20px;"></div>
                 </div>
             </div>
         </div>

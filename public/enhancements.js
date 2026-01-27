@@ -265,15 +265,122 @@ async function compareDSOs() {
         </div>
     `;
 
-    // Create comparison table
+    // Store results globally for export/filtering
+    window.dsoComparisonResults = results;
+    window.dsoComparisonBaseParams = baseParams;
+
+    // Create comparison table with controls
+    renderComparisonMatrix(results, baseParams, bestOption, detailsDiv);
+}
+
+// Render Comparison Matrix with filtering and sorting
+function renderComparisonMatrix(results, baseParams, bestOption, container) {
+    // Get unique values for filters
+    const allDSOs = [...new Set(results.map(r => r.dso))];
+    const allVoltages = [...new Set(results.map(r => r.voltage))];
+
+    // Current filter/sort state (use stored state or defaults)
+    const currentFilters = window.comparisonFilters || {
+        dso: 'all',
+        voltage: 'all',
+        sortBy: 'cost',
+        sortOrder: 'asc'
+    };
+
+    // Apply filters
+    let filteredResults = results.filter(r => {
+        if (currentFilters.dso !== 'all' && r.dso !== currentFilters.dso) return false;
+        if (currentFilters.voltage !== 'all' && r.voltage !== currentFilters.voltage) return false;
+        return true;
+    });
+
+    // Apply sorting
+    filteredResults.sort((a, b) => {
+        let aVal, bVal;
+        switch(currentFilters.sortBy) {
+            case 'cost':
+                aVal = a.result.total;
+                bVal = b.result.total;
+                break;
+            case 'costPerMWh':
+                aVal = a.costPerMWh;
+                bVal = b.costPerMWh;
+                break;
+            case 'dso':
+                aVal = a.dso;
+                bVal = b.dso;
+                break;
+            case 'voltage':
+                aVal = a.voltage;
+                bVal = b.voltage;
+                break;
+            default:
+                aVal = a.result.total;
+                bVal = b.result.total;
+        }
+
+        const comparison = typeof aVal === 'string'
+            ? aVal.localeCompare(bVal)
+            : aVal - bVal;
+
+        return currentFilters.sortOrder === 'asc' ? comparison : -comparison;
+    });
+
     const tableHTML = `
-        <h4 style="margin-bottom: 15px; color: #495057;">Detailed DSO Comparison</h4>
-        <p style="margin-bottom: 15px; color: #6c757d; font-size: 0.9rem;">
-            ℹ️ This comparison uses the same energy usage and demand parameters across all DSOs.
-            Each DSO's standard voltage level and configuration is used.
-        </p>
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="margin: 0; color: #495057;">Comparison Matrix</h4>
+                <div>
+                    <button onclick="exportComparisonToExcel()" class="btn btn-small btn-secondary" style="margin-right: 8px;">
+                        📊 Export to Excel
+                    </button>
+                    <button onclick="copyComparisonToClipboard()" class="btn btn-small btn-secondary">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters and Sort Controls -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <div>
+                    <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6c757d;">Filter by DSO</label>
+                    <select onchange="updateComparisonFilter('dso', this.value)" style="width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <option value="all" ${currentFilters.dso === 'all' ? 'selected' : ''}>All DSOs</option>
+                        ${allDSOs.map(dso => `<option value="${dso}" ${currentFilters.dso === dso ? 'selected' : ''}>${dso}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6c757d;">Filter by Voltage</label>
+                    <select onchange="updateComparisonFilter('voltage', this.value)" style="width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <option value="all" ${currentFilters.voltage === 'all' ? 'selected' : ''}>All Voltages</option>
+                        ${allVoltages.map(v => `<option value="${v}" ${currentFilters.voltage === v ? 'selected' : ''}>${v}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6c757d;">Sort by</label>
+                    <select onchange="updateComparisonFilter('sortBy', this.value)" style="width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <option value="cost" ${currentFilters.sortBy === 'cost' ? 'selected' : ''}>Annual Cost</option>
+                        <option value="costPerMWh" ${currentFilters.sortBy === 'costPerMWh' ? 'selected' : ''}>Cost per MWh</option>
+                        <option value="dso" ${currentFilters.sortBy === 'dso' ? 'selected' : ''}>DSO Name</option>
+                        <option value="voltage" ${currentFilters.sortBy === 'voltage' ? 'selected' : ''}>Voltage Level</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6c757d;">Order</label>
+                    <select onchange="updateComparisonFilter('sortOrder', this.value)" style="width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px;">
+                        <option value="asc" ${currentFilters.sortOrder === 'asc' ? 'selected' : ''}>Ascending</option>
+                        <option value="desc" ${currentFilters.sortOrder === 'desc' ? 'selected' : ''}>Descending</option>
+                    </select>
+                </div>
+            </div>
+
+            <p style="margin-bottom: 15px; color: #6c757d; font-size: 0.9rem;">
+                ℹ️ Showing ${filteredResults.length} of ${results.length} configurations
+            </p>
+        </div>
+
         <div class="comparison-table-wrapper">
-            <table class="breakdown-table">
+            <table class="breakdown-table" id="comparison-matrix-table">
                 <thead>
                     <tr>
                         <th>DSO/TSO</th>
@@ -286,10 +393,10 @@ async function compareDSOs() {
                     </tr>
                 </thead>
                 <tbody>
-                    ${results.map((r, index) => {
+                    ${filteredResults.map((r, index) => {
                         const diff = (r.result.total - bestOption.result.total) * 1000;
-                        const isBest = index === 0;
-                        const isWorst = index === results.length - 1;
+                        const isBest = r.dso === bestOption.dso && r.voltage === bestOption.voltage;
+                        const isWorst = index === filteredResults.length - 1 && filteredResults.length === results.length;
 
                         return `
                             <tr style="background-color: ${isBest ? '#d4edda' : isWorst ? '#f8d7da' : 'transparent'};">
@@ -310,7 +417,372 @@ async function compareDSOs() {
         </div>
     `;
 
-    detailsDiv.innerHTML = tableHTML;
+    container.innerHTML = tableHTML;
+}
+
+// Update comparison filter
+function updateComparisonFilter(filterType, value) {
+    if (!window.comparisonFilters) {
+        window.comparisonFilters = {
+            dso: 'all',
+            voltage: 'all',
+            sortBy: 'cost',
+            sortOrder: 'asc'
+        };
+    }
+
+    window.comparisonFilters[filterType] = value;
+
+    // Re-render the matrix
+    const detailsDiv = document.getElementById('dso-comparison-details');
+    const results = window.dsoComparisonResults;
+    const baseParams = window.dsoComparisonBaseParams;
+    const bestOption = results.sort((a, b) => a.result.total - b.result.total)[0];
+
+    renderComparisonMatrix(results, baseParams, bestOption, detailsDiv);
+}
+
+// Export comparison to Excel
+function exportComparisonToExcel() {
+    if (!window.dsoComparisonResults) {
+        alert('No comparison data available. Please run a comparison first.');
+        return;
+    }
+
+    const results = window.dsoComparisonResults;
+    const baseParams = window.dsoComparisonBaseParams;
+
+    // Prepare data for Excel
+    const excelData = [
+        ['DSO Comparison Report'],
+        ['Generated:', new Date().toLocaleString()],
+        [],
+        ['Parameters:'],
+        ['Annual Offtake (MWh):', baseParams.offtake_energy],
+        ['Annual Injection (MWh):', baseParams.injection_energy],
+        ['Monthly Peak (MW):', baseParams.peak_monthly],
+        ['Annual Peak (MW):', baseParams.peak_yearly],
+        ['Contracted Capacity (MVA):', baseParams.contracted_capacity],
+        ['BESS:', baseParams.is_bess ? 'Yes' : 'No'],
+        [],
+        ['DSO/TSO', 'Voltage Level', 'Region', 'Connection', 'Annual Cost (€)', 'Cost per MWh (€)', 'Difference vs Best (€)']
+    ];
+
+    // Sort by cost
+    const sortedResults = [...results].sort((a, b) => a.result.total - b.result.total);
+    const bestCost = sortedResults[0].result.total;
+
+    sortedResults.forEach(r => {
+        const diff = (r.result.total - bestCost) * 1000;
+        excelData.push([
+            r.dso,
+            r.voltage,
+            r.region || '-',
+            r.connection_type || '-',
+            (r.result.total * 1000).toFixed(2),
+            r.costPerMWh.toFixed(2),
+            diff.toFixed(2)
+        ]);
+    });
+
+    // Convert to CSV (simple Excel-compatible format)
+    const csvContent = excelData.map(row =>
+        row.map(cell => {
+            const cellStr = String(cell);
+            // Escape quotes and wrap in quotes if contains comma
+            return cellStr.includes(',') || cellStr.includes('"')
+                ? `"${cellStr.replace(/"/g, '""')}"`
+                : cellStr;
+        }).join(',')
+    ).join('\n');
+
+    // Create download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `dso_comparison_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Copy comparison to clipboard
+function copyComparisonToClipboard() {
+    if (!window.dsoComparisonResults) {
+        alert('No comparison data available. Please run a comparison first.');
+        return;
+    }
+
+    const results = window.dsoComparisonResults;
+    const sortedResults = [...results].sort((a, b) => a.result.total - b.result.total);
+    const bestCost = sortedResults[0].result.total;
+
+    let text = 'DSO COMPARISON RESULTS\n';
+    text += '======================\n\n';
+    text += `Generated: ${new Date().toLocaleString()}\n\n`;
+    text += 'DSO/TSO\t\tVoltage\t\tAnnual Cost\tCost/MWh\tDifference\n';
+    text += '-'.repeat(70) + '\n';
+
+    sortedResults.forEach(r => {
+        const diff = (r.result.total - bestCost) * 1000;
+        text += `${r.dso}\t\t${r.voltage}\t\t€${(r.result.total * 1000).toFixed(2)}\t€${r.costPerMWh.toFixed(2)}\t`;
+        text += diff === 0 ? '✓ Best\n' : `+€${diff.toFixed(2)}\n`;
+    });
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success message
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        btn.style.background = '#28a745';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+        }, 2000);
+    }).catch(err => {
+        alert('Failed to copy to clipboard. Please try again.');
+        console.error('Copy failed:', err);
+    });
+}
+
+// Cost Breakdown Drill-Down
+function showCostDetail(feeName, feeData, params) {
+    const modal = document.getElementById('cost-detail-modal');
+    const titleElement = document.getElementById('modal-fee-title');
+    const contentElement = document.getElementById('cost-detail-content');
+
+    // Set modal title
+    titleElement.textContent = feeName;
+
+    // Fee descriptions and formulas
+    const feeDescriptions = {
+        'Injection Fixed': {
+            description: 'Fixed annual charge for injection capability, regardless of actual usage.',
+            formula: 'Rate (k€/year)',
+            type: 'Fixed',
+            applies: 'Applied once per year'
+        },
+        'Injection Contracted': {
+            description: 'Charge based on contracted injection capacity.',
+            formula: 'Rate (k€/MVA/year) × Contracted Capacity (MVA)',
+            type: 'Capacity-based',
+            applies: 'Based on contracted MVA'
+        },
+        'Injection Peak Monthly': {
+            description: 'Charge based on the highest monthly injection peak demand.',
+            formula: 'Rate (k€/MW/year) × Monthly Peak (MW)',
+            type: 'Demand-based',
+            applies: 'Based on highest monthly peak'
+        },
+        'Injection Peak Yearly': {
+            description: 'Charge based on the annual peak injection demand.',
+            formula: 'Rate (k€/MW/year) × Annual Peak (MW)',
+            type: 'Demand-based',
+            applies: 'Based on annual peak'
+        },
+        'Injection Volumetric': {
+            description: 'Variable charge based on total energy injected into the grid.',
+            formula: 'Rate (k€/MWh) × Injection Energy (MWh/year)',
+            type: 'Energy-based',
+            applies: 'Per MWh injected'
+        },
+        'Injection Other': {
+            description: 'Additional injection-related charges specific to this tariff.',
+            formula: 'Varies by DSO',
+            type: 'Other',
+            applies: 'DSO-specific'
+        },
+        'Offtake Fixed': {
+            description: 'Fixed annual charge for offtake (consumption) connection.',
+            formula: 'Rate (k€/year)',
+            type: 'Fixed',
+            applies: 'Applied once per year'
+        },
+        'Offtake Contracted': {
+            description: 'Charge based on contracted offtake capacity.',
+            formula: 'Rate (k€/MVA/year) × Contracted Capacity (MVA)',
+            type: 'Capacity-based',
+            applies: 'Based on contracted MVA'
+        },
+        'Offtake Peak Monthly': {
+            description: 'Charge based on the highest monthly offtake peak demand.',
+            formula: 'Rate (k€/MW/year) × Monthly Peak (MW)',
+            type: 'Demand-based',
+            applies: 'Based on highest monthly peak'
+        },
+        'Offtake Peak Yearly': {
+            description: 'Charge based on the annual peak offtake demand.',
+            formula: 'Rate (k€/MW/year) × Annual Peak (MW)',
+            type: 'Demand-based',
+            applies: 'Based on annual peak'
+        },
+        'Offtake Volumetric': {
+            description: 'Variable charge based on total energy consumed from the grid.',
+            formula: 'Rate (k€/MWh) × Offtake Energy (MWh/year)',
+            type: 'Energy-based',
+            applies: 'Per MWh consumed'
+        },
+        'Offtake Other': {
+            description: 'Additional offtake-related charges specific to this tariff.',
+            formula: 'Varies by DSO',
+            type: 'Other',
+            applies: 'DSO-specific'
+        }
+    };
+
+    const feeInfo = feeDescriptions[feeName] || {
+        description: 'Fee component as defined by the DSO tariff structure.',
+        formula: 'Rate × Quantity × Multiplier',
+        type: 'Standard',
+        applies: 'As specified in tariff'
+    };
+
+    // Build content HTML
+    const content = `
+        <div class="detail-section">
+            <h4>📋 Description</h4>
+            <p style="color: #495057; line-height: 1.6;">${feeInfo.description}</p>
+        </div>
+
+        <div class="detail-section">
+            <h4>🧮 Calculation</h4>
+            <div class="formula-box">
+                <strong>Formula:</strong><br>
+                ${feeInfo.formula}
+            </div>
+            <div class="detail-grid">
+                <div class="detail-label">Rate:</div>
+                <div class="detail-value">${feeData.rate.toFixed(6)} k€</div>
+                <div class="detail-label">Quantity:</div>
+                <div class="detail-value">${feeData.quantity.toFixed(2)}</div>
+                <div class="detail-label">Multiplier:</div>
+                <div class="detail-value">${feeData.multiplier.toFixed(2)}${params.is_bess && feeData.multiplier < 1 ? ' (BESS exemption applied)' : ''}</div>
+            </div>
+            <div class="formula-box" style="background: #e7f3ff; border-color: #007bff;">
+                <strong>Result:</strong><br>
+                ${feeData.rate.toFixed(6)} × ${feeData.quantity.toFixed(2)} × ${feeData.multiplier.toFixed(2)} = <strong style="color: #DC143C;">${feeData.total.toFixed(6)} k€ = €${(feeData.total * 1000).toFixed(2)}/year</strong>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h4>📊 Fee Information</h4>
+            <div class="detail-grid">
+                <div class="detail-label">Fee Type:</div>
+                <div class="detail-value">${feeInfo.type}</div>
+                <div class="detail-label">Applies:</div>
+                <div class="detail-value">${feeInfo.applies}</div>
+                <div class="detail-label">Annual Amount:</div>
+                <div class="detail-value" style="font-size: 1.2rem; font-weight: 700; color: #DC143C;">€${(feeData.total * 1000).toFixed(2)}</div>
+            </div>
+        </div>
+
+        ${feeData.total > 0 ? `
+            <div class="detail-section">
+                <h4>💡 Optimization Tips</h4>
+                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px;">
+                    ${getOptimizationTip(feeName, feeData, params)}
+                </div>
+            </div>
+        ` : ''}
+    `;
+
+    contentElement.innerHTML = content;
+    modal.classList.add('show');
+}
+
+// Get optimization tips based on fee type
+function getOptimizationTip(feeName, feeData, params) {
+    if (feeName.includes('Peak Monthly') || feeName.includes('Peak Yearly')) {
+        return `
+            <strong>💡 Peak Demand Reduction:</strong><br>
+            This is a demand charge based on your peak usage. Consider:
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Load shifting to off-peak hours</li>
+                <li>Installing BESS to shave peaks</li>
+                <li>Demand response programs</li>
+                <li>Even a 10% peak reduction could save €${((feeData.total * 0.1) * 1000).toFixed(2)}/year</li>
+            </ul>
+        `;
+    } else if (feeName.includes('Volumetric')) {
+        return `
+            <strong>💡 Energy Efficiency:</strong><br>
+            This charge is based on total energy usage. Consider:
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Energy efficiency improvements</li>
+                <li>On-site generation (solar, etc.)</li>
+                <li>Optimizing operational schedules</li>
+            </ul>
+        `;
+    } else if (feeName.includes('Contracted')) {
+        return `
+            <strong>💡 Capacity Optimization:</strong><br>
+            This charge is based on contracted capacity. Consider:
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Review if contracted capacity matches actual needs</li>
+                <li>Negotiate with DSO if consistently under capacity</li>
+                <li>Plan for future expansion needs</li>
+            </ul>
+        `;
+    } else if (feeName.includes('Fixed')) {
+        return `
+            <strong>💡 Fixed Charges:</strong><br>
+            This is a fixed charge that applies regardless of usage. Limited optimization options, but:
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Ensure you're on the correct tariff for your usage profile</li>
+                <li>Compare with other DSOs if available</li>
+                <li>Consider if different voltage level might be more economical</li>
+            </ul>
+        `;
+    } else {
+        return `
+            <strong>💡 General Optimization:</strong><br>
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Compare with other DSO tariffs</li>
+                <li>Monitor usage patterns regularly</li>
+                <li>Consider BESS for eligible exemptions</li>
+            </ul>
+        `;
+    }
+}
+
+// Close modal
+function closeCostDetailModal() {
+    const modal = document.getElementById('cost-detail-modal');
+    modal.classList.remove('show');
+}
+
+// Make breakdown rows clickable
+function makeBreakdownClickable() {
+    const result = window.lastCalculationResult;
+    const params = getFormData();
+
+    if (!result || !result.breakdown) return;
+
+    const breakdownBody = document.getElementById('breakdown-body');
+    if (!breakdownBody) return;
+
+    const rows = breakdownBody.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        const feeName = Object.keys(result.breakdown)[index];
+        const feeData = result.breakdown[feeName];
+
+        if (feeName && feeData) {
+            row.classList.add('breakdown-row-clickable');
+            row.style.cursor = 'pointer';
+            row.title = 'Click for details';
+
+            // Remove any existing click handlers
+            row.replaceWith(row.cloneNode(true));
+            const newRow = breakdownBody.querySelectorAll('tr')[index];
+
+            newRow.addEventListener('click', () => {
+                showCostDetail(feeName, feeData, params);
+            });
+        }
+    });
 }
 
 // Comparison Mode
@@ -442,6 +914,327 @@ function exportToCSV(result, params) {
     a.download = `grid-fees-${params.dso_tso}-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+}
+
+// Copy results to clipboard
+function copyResultsToClipboard(result, params) {
+    let text = '═══════════════════════════════════════\n';
+    text += '  BELGIAN GRID FEES CALCULATOR\n';
+    text += '  Results Report\n';
+    text += '═══════════════════════════════════════\n\n';
+    text += `Generated: ${new Date().toLocaleString()}\n\n`;
+
+    text += '📍 CONFIGURATION\n';
+    text += '─────────────────────────────────────\n';
+    text += `DSO/TSO: ${params.dso_tso}\n`;
+    if (params.region) text += `Region: ${params.region}\n`;
+    text += `Voltage Level: ${params.voltage}\n`;
+    if (params.connection_type) text += `Connection Type: ${params.connection_type}\n`;
+    text += `BESS Exemptions: ${params.is_bess ? 'Yes' : 'No'}\n\n`;
+
+    text += '⚡ INPUT VALUES\n';
+    text += '─────────────────────────────────────\n';
+    text += `Annual Offtake: ${params.offtake_energy} MWh/year\n`;
+    text += `Annual Injection: ${params.injection_energy} MWh/year\n`;
+    text += `Monthly Peak Demand: ${params.peak_monthly} MW\n`;
+    text += `Annual Peak Demand: ${params.peak_yearly} MW\n`;
+    text += `Contracted Capacity: ${params.contracted_capacity} MVA\n\n`;
+
+    text += '💰 RESULTS\n';
+    text += '─────────────────────────────────────\n';
+    text += `TOTAL ANNUAL COST: €${(result.total * 1000).toFixed(2)}\n\n`;
+    text += `  Offtake Fees:   €${(result.total_offtake * 1000).toFixed(2)}\n`;
+    text += `  Injection Fees: €${(result.total_injection * 1000).toFixed(2)}\n\n`;
+
+    text += '📊 FEE BREAKDOWN\n';
+    text += '─────────────────────────────────────\n';
+    text += 'Component                Rate     Qty    Mult   Amount\n';
+    text += '─────────────────────────────────────\n';
+
+    Object.entries(result.breakdown).forEach(([name, fee]) => {
+        if (fee.total > 0) {
+            const nameShort = name.length > 20 ? name.substring(0, 20) : name.padEnd(20);
+            text += `${nameShort} ${fee.rate.toFixed(3)} ${fee.quantity.toFixed(1)} ${fee.multiplier.toFixed(2)} €${(fee.total * 1000).toFixed(2)}\n`;
+        }
+    });
+
+    text += '\n═══════════════════════════════════════\n';
+    text += 'gridfeessimulator.com\n';
+    text += '═══════════════════════════════════════\n';
+
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-results-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        btn.style.background = '#28a745';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+        }, 2000);
+    }).catch(err => {
+        alert('Failed to copy to clipboard. Please try again.');
+        console.error('Copy failed:', err);
+    });
+}
+
+// Print results
+function printResults(result, params) {
+    const printWindow = window.open('', '_blank');
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Grid Fees Report - ${params.dso_tso}</title>
+            <style>
+                @media print {
+                    @page {
+                        margin: 2cm;
+                        size: A4;
+                    }
+                }
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    padding: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                    border-bottom: 3px solid #DC143C;
+                    padding-bottom: 20px;
+                }
+                .header h1 {
+                    color: #DC143C;
+                    font-size: 24px;
+                    margin-bottom: 10px;
+                }
+                .header .subtitle {
+                    color: #666;
+                    font-size: 14px;
+                }
+                .section {
+                    margin-bottom: 30px;
+                    page-break-inside: avoid;
+                }
+                .section h2 {
+                    color: #495057;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    border-bottom: 2px solid #e9ecef;
+                    padding-bottom: 8px;
+                }
+                .info-grid {
+                    display: grid;
+                    grid-template-columns: 200px 1fr;
+                    gap: 10px;
+                    margin-bottom: 10px;
+                }
+                .info-label {
+                    font-weight: 600;
+                    color: #6c757d;
+                }
+                .info-value {
+                    color: #333;
+                }
+                .total-box {
+                    background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+                    color: white;
+                    padding: 25px;
+                    border-radius: 8px;
+                    text-align: center;
+                    margin: 20px 0;
+                }
+                .total-box .label {
+                    font-size: 16px;
+                    margin-bottom: 10px;
+                }
+                .total-box .amount {
+                    font-size: 36px;
+                    font-weight: bold;
+                }
+                .summary-cards {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin: 20px 0;
+                }
+                .summary-card {
+                    border: 1px solid #dee2e6;
+                    border-radius: 8px;
+                    padding: 15px;
+                    background: #f8f9fa;
+                }
+                .summary-card .label {
+                    font-size: 12px;
+                    color: #6c757d;
+                    margin-bottom: 5px;
+                }
+                .summary-card .value {
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #DC143C;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 15px;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid #dee2e6;
+                }
+                th {
+                    background: #f8f9fa;
+                    font-weight: 600;
+                    color: #495057;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                }
+                td {
+                    font-size: 13px;
+                }
+                .amount-col {
+                    text-align: right;
+                    font-weight: 600;
+                    color: #DC143C;
+                }
+                .footer {
+                    margin-top: 40px;
+                    padding-top: 20px;
+                    border-top: 1px solid #dee2e6;
+                    text-align: center;
+                    color: #6c757d;
+                    font-size: 12px;
+                }
+                .print-btn {
+                    background: #DC143C;
+                    color: white;
+                    border: none;
+                    padding: 12px 30px;
+                    font-size: 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    margin: 20px auto;
+                    display: block;
+                }
+                .print-btn:hover {
+                    background: #8B0000;
+                }
+                @media print {
+                    .print-btn {
+                        display: none;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>Grid Fees Calculator Report</h1>
+                <div class="subtitle">Generated on ${new Date().toLocaleString()}</div>
+            </div>
+
+            <div class="section">
+                <h2>📍 Configuration</h2>
+                <div class="info-grid">
+                    <div class="info-label">DSO/TSO:</div>
+                    <div class="info-value">${params.dso_tso}</div>
+                    ${params.region ? `
+                        <div class="info-label">Region:</div>
+                        <div class="info-value">${params.region}</div>
+                    ` : ''}
+                    <div class="info-label">Voltage Level:</div>
+                    <div class="info-value">${params.voltage}</div>
+                    ${params.connection_type ? `
+                        <div class="info-label">Connection Type:</div>
+                        <div class="info-value">${params.connection_type}</div>
+                    ` : ''}
+                    <div class="info-label">BESS Exemptions:</div>
+                    <div class="info-value">${params.is_bess ? 'Yes' : 'No'}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⚡ Input Parameters</h2>
+                <div class="info-grid">
+                    <div class="info-label">Annual Offtake:</div>
+                    <div class="info-value">${params.offtake_energy} MWh/year</div>
+                    <div class="info-label">Annual Injection:</div>
+                    <div class="info-value">${params.injection_energy} MWh/year</div>
+                    <div class="info-label">Monthly Peak Demand:</div>
+                    <div class="info-value">${params.peak_monthly} MW</div>
+                    <div class="info-label">Annual Peak Demand:</div>
+                    <div class="info-value">${params.peak_yearly} MW</div>
+                    <div class="info-label">Contracted Capacity:</div>
+                    <div class="info-value">${params.contracted_capacity} MVA</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💰 Results</h2>
+                <div class="total-box">
+                    <div class="label">Total Annual Grid Fees (excl. VAT)</div>
+                    <div class="amount">€${(result.total * 1000).toFixed(2)}</div>
+                </div>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="label">Offtake Fees</div>
+                        <div class="value">€${(result.total_offtake * 1000).toFixed(2)}</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="label">Injection Fees</div>
+                        <div class="value">€${(result.total_injection * 1000).toFixed(2)}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Detailed Fee Breakdown</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fee Component</th>
+                            <th>Rate (k€)</th>
+                            <th>Quantity</th>
+                            <th>Multiplier</th>
+                            <th class="amount-col">Amount (€/year)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${Object.entries(result.breakdown).map(([name, fee]) => `
+                            <tr>
+                                <td><strong>${name}</strong></td>
+                                <td>${fee.rate.toFixed(6)}</td>
+                                <td>${fee.quantity.toFixed(2)}</td>
+                                <td>${fee.multiplier.toFixed(2)}</td>
+                                <td class="amount-col">€${(fee.total * 1000).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>This report was generated by the Belgian Grid Fees Calculator</p>
+                <p>gridfeessimulator.com</p>
+            </div>
+
+            <button class="print-btn" onclick="window.print()">🖨️ Print This Report</button>
+        </body>
+        </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
 }
 
 
@@ -633,6 +1426,27 @@ function initEnhancements() {
         });
     }
 
+    const copyBtn = document.getElementById('copy-results-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const params = getFormData();
+            const result = window.lastCalculationResult;
+            if (result && !result.error) {
+                copyResultsToClipboard(result, params);
+            }
+        });
+    }
+
+    const printBtn = document.getElementById('print-results-btn');
+    if (printBtn) {
+        printBtn.addEventListener('click', () => {
+            const params = getFormData();
+            const result = window.lastCalculationResult;
+            if (result && !result.error) {
+                printResults(result, params);
+            }
+        });
+    }
 
     const sensitivityBtn = document.getElementById('sensitivity-btn');
     if (sensitivityBtn) {
@@ -665,9 +1479,47 @@ function getFormData() {
     };
 }
 
+// Dark Mode Functions
+function toggleDarkMode() {
+    const body = document.body;
+    const icon = document.getElementById('dark-mode-icon');
+
+    body.classList.toggle('dark-mode');
+
+    const isDarkMode = body.classList.contains('dark-mode');
+
+    // Update icon
+    icon.textContent = isDarkMode ? '☀️' : '🌙';
+
+    // Save preference
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+}
+
+function loadDarkModePreference() {
+    const darkMode = localStorage.getItem('darkMode');
+    const body = document.body;
+    const icon = document.getElementById('dark-mode-icon');
+
+    if (darkMode === 'enabled') {
+        body.classList.add('dark-mode');
+        if (icon) icon.textContent = '☀️';
+    }
+
+    // Auto-enable dark mode based on system preference if no preference saved
+    if (!darkMode && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        body.classList.add('dark-mode');
+        if (icon) icon.textContent = '☀️';
+        localStorage.setItem('darkMode', 'enabled');
+    }
+}
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initEnhancements);
+    document.addEventListener('DOMContentLoaded', () => {
+        initEnhancements();
+        loadDarkModePreference();
+    });
 } else {
     initEnhancements();
+    loadDarkModePreference();
 }

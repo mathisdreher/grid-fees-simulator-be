@@ -243,6 +243,11 @@ function displayResults(result, params) {
     if (typeof compareStorageIndexToGridFees === 'function' && params) {
         compareStorageIndexToGridFees(result, params);
     }
+
+    // Make breakdown rows clickable for drill-down
+    if (typeof makeBreakdownClickable === 'function') {
+        setTimeout(makeBreakdownClickable, 100); // Small delay to ensure DOM is ready
+    }
 }
 
 // Show error message

@@ -237,10 +237,7 @@ function displayResults(result, params) {
     document.getElementById('results').classList.add('show');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    // Generate insights if function is available
-    if (typeof generateInsights === 'function' && params) {
-        generateInsights(result, params);
-    }
+    // Insights generation removed per user request
 
     // Generate Storage Index comparison if function is available
     if (typeof compareStorageIndexToGridFees === 'function' && params) {

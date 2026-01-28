@@ -210,24 +210,14 @@ function displayResults(result, params) {
         
         const quantityCell = document.createElement('td');
         quantityCell.textContent = formatQuantity(feeData.quantity, feeName);
-        
-        const multiplierCell = document.createElement('td');
-        multiplierCell.textContent = feeData.multiplier.toFixed(2);
-        if (feeData.multiplier < 1) {
-            const badge = document.createElement('span');
-            badge.className = 'info-badge';
-            badge.textContent = 'BESS';
-            multiplierCell.appendChild(badge);
-        }
-        
+
         const amountCell = document.createElement('td');
         amountCell.className = 'fee-amount';
         amountCell.textContent = formatCurrency(feeData.total);
-        
+
         row.appendChild(nameCell);
         row.appendChild(rateCell);
         row.appendChild(quantityCell);
-        row.appendChild(multiplierCell);
         row.appendChild(amountCell);
         
         tbody.appendChild(row);

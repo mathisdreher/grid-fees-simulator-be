@@ -480,155 +480,6 @@
             text-decoration: underline;
         }
 
-        /* Dark Mode Toggle Button */
-        .dark-mode-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .dark-mode-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-
-        /* Dark Mode Styles */
-        body.dark-mode {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        body.dark-mode .container {
-            background: transparent;
-        }
-
-        body.dark-mode header {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-        }
-
-        body.dark-mode .main-card {
-            background: #1e1e2f;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        body.dark-mode .form-section {
-            background: #25253a;
-        }
-
-        body.dark-mode label,
-        body.dark-mode h2,
-        body.dark-mode h3,
-        body.dark-mode h4,
-        body.dark-mode .section-header h2,
-        body.dark-mode .subsection-header {
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode .detail-label,
-        body.dark-mode .info-label {
-            color: #a0a0a0 !important;
-        }
-
-        body.dark-mode p,
-        body.dark-mode .detail-value,
-        body.dark-mode .info-value {
-            color: #c0c0c0 !important;
-        }
-
-        body.dark-mode input,
-        body.dark-mode select {
-            background: #2d2d44;
-            color: #e0e0e0;
-            border-color: #3d3d5c;
-        }
-
-        body.dark-mode input:focus,
-        body.dark-mode select:focus {
-            border-color: #DC143C;
-            background: #363652;
-        }
-
-        body.dark-mode .breakdown-table {
-            background: #25253a;
-        }
-
-        body.dark-mode .breakdown-table th {
-            background: #2d2d44;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .breakdown-table td {
-            color: #c0c0c0;
-            border-bottom-color: #3d3d5c;
-        }
-
-        body.dark-mode .breakdown-table tr:hover,
-        body.dark-mode .breakdown-row-clickable:hover {
-            background: #2d2d44 !important;
-        }
-
-        body.dark-mode .summary-card {
-            background: #2d2d44;
-            border-color: #3d3d5c;
-        }
-
-        body.dark-mode .bess-toggle {
-            background: #2d2d44;
-            border-color: #3d3d5c;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .bess-result-item {
-            background: #363652;
-        }
-
-        body.dark-mode .insight-card.success {
-            background: #1a3a28;
-            border-color: #28a745;
-            color: #a0d4ae;
-        }
-
-        body.dark-mode .insight-card.warning {
-            background: #3a3220;
-            border-color: #ffc107;
-            color: #e0d4a0;
-        }
-
-        body.dark-mode .insight-card.info {
-            background: #1a2a3a;
-            border-color: #17a2b8;
-            color: #a0c4d4;
-        }
-
-        body.dark-mode .modal-content {
-            background: #1e1e2f;
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .modal-body {
-            background: #1e1e2f;
-        }
-
-        body.dark-mode .formula-box {
-            background: #2d2d44;
-            color: #c0c0c0;
-        }
-
-        body.dark-mode .detail-section h4 {
-            border-bottom-color: #3d3d5c;
-        }
-
-        body.dark-mode footer {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
         /* BESS Calculator Styles */
         .bess-calculator {
             margin-bottom: 20px;
@@ -894,17 +745,12 @@
                     <h1 id="page-title">🔌 Belgian Grid Fees Calculator</h1>
                     <p id="page-subtitle">Calculate network tariffs for Belgium 2026</p>
                 </div>
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <button id="dark-mode-toggle" class="dark-mode-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode">
-                        <span id="dark-mode-icon">🌙</span>
-                    </button>
-                    <div class="language-selector">
-                        <select id="language-selector" onchange="changeLanguage(this.value)" class="lang-select">
-                            <option value="en">🇬🇧 English</option>
-                            <option value="fr">🇫🇷 Français</option>
-                            <option value="nl">🇳🇱 Nederlands</option>
-                        </select>
-                    </div>
+                <div class="language-selector">
+                    <select id="language-selector" onchange="changeLanguage(this.value)" class="lang-select">
+                        <option value="en">🇬🇧 English</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="nl">🇳🇱 Nederlands</option>
+                    </select>
                 </div>
             </div>
         </header>
@@ -1082,7 +928,6 @@
                                 <th>Fee Component</th>
                                 <th>Rate</th>
                                 <th>Quantity</th>
-                                <th>Multiplier</th>
                                 <th>Amount</th>
                             </tr>
                         </thead>
@@ -1091,36 +936,6 @@
                     </table>
                 </div>
 
-                <!-- Action Buttons -->
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #dee2e6;">
-                    <h3 style="margin-bottom: 15px; color: #6c757d; font-size: 1.1rem;">🔧 Actions</h3>
-
-                    <!-- Primary Action -->
-                    <div style="margin-bottom: 15px;">
-                        <button type="button" id="compare-dsos-btn" class="btn btn-primary" style="width: 100%; font-size: 1.05rem; padding: 12px;">
-                            🔍 Compare Across All DSOs
-                        </button>
-                        <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #6c757d; text-align: center;">
-                            See how different operators compare for your usage profile
-                        </p>
-                    </div>
-
-                    <!-- Secondary Actions -->
-                    <div class="action-buttons">
-                        <button type="button" id="save-scenario-btn" class="btn btn-secondary">
-                            💾 Save for Comparison
-                        </button>
-                        <button type="button" id="export-csv-btn" class="btn btn-secondary">
-                            📊 Export to CSV
-                        </button>
-                        <button type="button" id="copy-results-btn" class="btn btn-secondary">
-                            📋 Copy Results
-                        </button>
-                        <button type="button" id="print-results-btn" class="btn btn-secondary">
-                            🖨️ Print Report
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Insights Section removed per user request -->
 

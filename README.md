@@ -23,7 +23,7 @@ gridfees-simulator/
 ├── api/
 │   ├── calculate.py       # Main calculation API endpoint
 │   ├── options.py         # Options/configuration API endpoint
-│   └── data.json          # Grid fees database (from Excel)
+│   └── data.json          # Grid fees database
 ├── public/
 │   ├── index.html         # Main HTML page
 │   └── app.js             # Frontend JavaScript
@@ -120,7 +120,7 @@ To test locally before deployment:
 
 ## Data Source
 
-The grid fees data is sourced from the `GridFees_BE2026.xlsx` file and includes:
+The grid fees data is sourced from Belgian DSO/TSO official tariffs and includes:
 
 - **DSO/TSO Operators**: Elia, Fluvius, Sibelga, Ores, Resa
 - **Fluvius Regions**: Antwerpen, Halle-Vilvoorde, Kempen, Limburg, Midden-Vlaanderen, West, Zenne-Dijle, Imewo
@@ -169,7 +169,7 @@ Calculates grid fees based on provided parameters
 - **Backend**: Python (serverless functions)
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Deployment**: Vercel
-- **Data Format**: JSON (converted from Excel)
+- **Data Format**: JSON database
 
 ## Notes
 

@@ -10,15 +10,15 @@
 
 ## 1. Executive Summary
 
-This PRD outlines the requirements for a web application that calculates Belgian electricity grid fees for different grid operators, voltage levels, and connection types. The application has a particular focus on Battery Energy Storage Systems (BESS), including applicable regulatory exemptions. The tool transforms an internal Excel-based calculator into a user-friendly web interface for both internal use and potential customer-facing scenarios.
+This PRD outlines the requirements for a web application that calculates Belgian electricity grid fees for different grid operators, voltage levels, and connection types. The application has a particular focus on Battery Energy Storage Systems (BESS), including applicable regulatory exemptions. The tool provides a user-friendly web interface for both internal use and potential customer-facing scenarios.
 
 ---
 
 ## 2. Problem Statement
 
-Currently, Flexcity uses an Excel spreadsheet to calculate Belgian grid fees for various connection configurations. This approach has several limitations:
+Currently, Flexcity needs a streamlined way to calculate Belgian grid fees for various connection configurations. This application addresses several needs:
 
-- **Accessibility:** Requires Excel and file sharing for each update
+- **Accessibility:** Web-based access without requiring specialized software
 - **Scalability:** Difficult to use with multiple stakeholders simultaneously
 - **Maintenance:** Formula updates require manual distribution
 - **User Experience:** Complex navigation across multiple sheets
@@ -35,7 +35,7 @@ Currently, Flexcity uses an Excel spreadsheet to calculate Belgian grid fees for
 4. Display cost breakdowns with clear visualizations
 
 ### Success Metrics
-- Calculation accuracy: 100% parity with Excel model
+- Calculation accuracy: Validated against DSO/TSO tariff regulations
 - User task completion: < 60 seconds from landing to result
 - Internal adoption: 80% of sales team using within 3 months
 
@@ -47,7 +47,7 @@ Currently, Flexcity uses an Excel spreadsheet to calculate Belgian grid fees for
 - Grid fee calculations for all Belgian DSOs/TSO
 - BESS exemption handling
 - Cost breakdown visualization
-- Downloadable results (PDF/Excel export)
+- Downloadable results (PDF export)
 - Responsive design (desktop + tablet)
 
 ### Out of Scope (v1.0)
@@ -65,7 +65,7 @@ Currently, Flexcity uses an Excel spreadsheet to calculate Belgian grid fees for
 ### Primary: Flexcity Sales Representative
 **Profile:** Business development professional selling energy flexibility services  
 **Needs:** Quick fee estimates during client meetings, comparison across connection options  
-**Pain Points:** Currently needs Excel access and expertise to provide estimates
+**Pain Points:** Currently needs specialized knowledge and tools to provide estimates
 
 ### Secondary: Energy Project Developer
 **Profile:** External partner evaluating BESS project economics  
@@ -182,7 +182,7 @@ Peak Demand (MW) = BESS Size (MW)
 ### 6.7 Export Functionality
 
 - **PDF Export:** Summary report with inputs, outputs, and methodology notes
-- **Excel Export:** Detailed breakdown matching original spreadsheet format
+- **PDF Export:** Detailed breakdown in professional report format
 - **Copy to Clipboard:** Quick copy of summary results
 
 ---
@@ -222,7 +222,7 @@ Peak Demand (MW) = BESS Size (MW)
 
 **Backend:**
 - Python (FastAPI or Flask) OR Node.js
-- JSON-based fee database (converted from Excel)
+- JSON-based fee database
 - No database required for v1.0 (stateless)
 
 **Deployment:**
@@ -368,7 +368,7 @@ Include the following disclaimers and explanations:
 ### Phase 2: Enhanced (2 weeks)
 - BESS quick calculator mode
 - Improved visualizations
-- Excel export
+- PDF export
 - Mobile optimization
 
 ### Phase 3: Polish (2 weeks)
@@ -384,7 +384,7 @@ Include the following disclaimers and explanations:
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | Tariff data becomes outdated | High | High | Implement admin interface for easy updates; version data with effective dates |
-| Calculation discrepancies | High | Medium | Comprehensive testing against Excel model; edge case documentation |
+| Calculation discrepancies | High | Medium | Comprehensive testing against DSO/TSO regulations; edge case documentation |
 | Low user adoption | Medium | Medium | Training sessions; embed in existing workflows |
 | Regulatory changes | Medium | Medium | Modular architecture for easy fee structure updates |
 
@@ -414,10 +414,10 @@ The web application must support all 41 unique configurations from the source da
 
 ### B. Source Data Reference
 
-Original data source: `GridFees_BE2026.xlsx`
-- Sheet: "BACKEND Fees Database" - All tariff rates
-- Sheet: "BACKEND BESS Exemptions" - Exemption multipliers by operator
-- Sheet: "BACKEND Connection Types" - Valid combinations per operator
+Data sources: Belgian DSO/TSO official tariffs (2026)
+- Tariff rates for all operators
+- BESS exemption multipliers by operator
+- Valid connection type combinations per operator
 
 ---
 

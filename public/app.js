@@ -229,11 +229,6 @@ function displayResults(result, params) {
 
     // Insights generation removed per user request
 
-    // Generate Storage Index comparison if function is available
-    if (typeof compareStorageIndexToGridFees === 'function' && params) {
-        compareStorageIndexToGridFees(result, params);
-    }
-
     // Make breakdown rows clickable for drill-down
     if (typeof makeBreakdownClickable === 'function') {
         setTimeout(makeBreakdownClickable, 100); // Small delay to ensure DOM is ready

@@ -82,7 +82,7 @@ Need to run commands (git, npm, etc)?
 
 ### Repository Information
 - **Repository**: mathisdreher/gridfees
-- **Primary Language**: TBD (will be determined during initial implementation)
+- **Primary Language**: English
 - **Current Status**: Active development - repository initialized
 - **Git Remote**: http://local_proxy@127.0.0.1:22460/git/mathisdreher/gridfees
 

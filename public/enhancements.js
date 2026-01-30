@@ -140,19 +140,15 @@ function createBreakdownChart(breakdown) {
 
 // Insights and Recommendations function removed per user request
 
-// DSO Comparison Feature
-async function compareDSOs() {
-    const dsoComparisonSection = document.getElementById('dso-comparison-section');
-    const summaryDiv = document.getElementById('dso-comparison-summary');
-    const detailsDiv = document.getElementById('dso-comparison-details');
+// Savings Comparison Feature
+async function runSavingsComparison() {
+    const section = document.getElementById('savings-comparison-section');
+    const contentDiv = document.getElementById('savings-comparison-content');
+    const translate = typeof window.t === 'function' ? window.t : (key) => key;
 
-    // Get current form parameters
     const baseParams = getFormData();
 
-    // DSOs to compare
-    const dsos = ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa'];
-
-    // Default configurations for each DSO
+    // DSO configurations
     const dsoConfigs = {
         'Elia': {
             voltage_levels: ['110-380 kV', '30-70 kV', 'Transfo < 30 kV'],
@@ -161,37 +157,36 @@ async function compareDSOs() {
         },
         'Fluvius': {
             voltage_levels: ['26-36 kV', '1-26 kV'],
-            region: 'Antwerpen', // Default region
-            connection_type: 'Post' // Default connection type
+            region: baseParams.dso_tso === 'Fluvius' ? baseParams.region : 'Antwerpen',
+            connection_type: 'Post'
         },
         'Sibelga': {
             voltage_levels: ['1-26 kV'],
             region: null,
-            connection_type: 'Main' // Default connection type
+            connection_type: 'Main'
         },
         'Ores': {
             voltage_levels: ['MT'],
             region: null,
-            connection_type: 'Post' // Default connection type
+            connection_type: 'Post'
         },
         'Resa': {
             voltage_levels: ['MT'],
             region: null,
-            connection_type: 'Post' // Default connection type
+            connection_type: 'Post'
         }
     };
 
-    // Show loading state
-    summaryDiv.innerHTML = '<div style="text-align: center; padding: 20px;">Loading comparison data...</div>';
-    dsoComparisonSection.style.display = 'block';
+    // Show loading
+    contentDiv.innerHTML = `<div style="text-align: center; padding: 30px;"><div class="spinner"></div><p style="margin-top: 10px; color: #6c757d;">${translate('savingsLoading')}</p></div>`;
+    section.style.display = 'block';
 
-    // Fetch results for each DSO
-    const results = [];
+    // Fetch all results in parallel
+    const promises = [];
+    const dsos = ['Elia', 'Fluvius', 'Sibelga', 'Ores', 'Resa'];
 
     for (const dso of dsos) {
         const config = dsoConfigs[dso];
-
-        // For each voltage level of this DSO
         for (const voltage of config.voltage_levels) {
             const params = {
                 dso_tso: dso,
@@ -206,113 +201,137 @@ async function compareDSOs() {
                 is_bess: baseParams.is_bess
             };
 
-            try {
-                const response = await fetch('/api/calculate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(params)
-                });
+            const isCurrent = dso === baseParams.dso_tso && voltage === baseParams.voltage;
 
-                if (response.ok) {
-                    const result = await response.json();
-                    results.push({
-                        dso: dso,
-                        voltage: voltage,
-                        region: config.region,
-                        connection_type: config.connection_type,
-                        params: params,
-                        result: result
-                    });
-                }
-            } catch (error) {
-                console.error(`Error calculating for ${dso} - ${voltage}:`, error);
-            }
+            promises.push(
+                fetch('/api/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(params)
+                })
+                .then(r => r.ok ? r.json() : null)
+                .then(result => result ? {
+                    dso, voltage,
+                    region: config.region,
+                    connection_type: config.connection_type,
+                    result,
+                    isCurrent
+                } : null)
+                .catch(() => null)
+            );
         }
     }
 
-    // Sort results by total cost (ascending)
-    results.sort((a, b) => a.result.total - b.result.total);
+    const allResults = (await Promise.all(promises)).filter(Boolean);
 
-    // Calculate cost per MWh for each result
-    results.forEach(r => {
-        r.costPerMWh = baseParams.offtake_energy > 0
-            ? (r.result.total * 1000) / baseParams.offtake_energy
-            : 0;
+    if (allResults.length === 0) {
+        contentDiv.innerHTML = `<p style="color: #999; text-align: center;">${translate('savingsNoData')}</p>`;
+        return;
+    }
+
+    // Sort by cost
+    allResults.sort((a, b) => a.result.total - b.result.total);
+
+    const cheapest = allResults[0];
+    const mostExpensive = allResults[allResults.length - 1];
+    const maxCost = mostExpensive.result.total;
+
+    // Find current selection in results
+    const currentResult = allResults.find(r => r.isCurrent);
+    const currentCost = currentResult ? currentResult.result.total : null;
+
+    // Colors for bars
+    const barColors = {
+        'Elia': '#1a5276',
+        'Fluvius': '#DC143C',
+        'Sibelga': '#f39c12',
+        'Ores': '#27ae60',
+        'Resa': '#8e44ad'
+    };
+
+    // Build summary cards
+    let summaryHTML = '<div class="savings-summary-cards">';
+
+    if (currentResult) {
+        summaryHTML += `
+            <div class="savings-summary-card current-card">
+                <h4>${translate('savingsYourCurrent')}</h4>
+                <div class="value">€${(currentCost * 1000).toFixed(0)}</div>
+                <div class="sublabel">${currentResult.dso} - ${currentResult.voltage}</div>
+            </div>
+        `;
+    }
+
+    summaryHTML += `
+        <div class="savings-summary-card best">
+            <h4>${translate('savingsCheapest')}</h4>
+            <div class="value">€${(cheapest.result.total * 1000).toFixed(0)}</div>
+            <div class="sublabel">${cheapest.dso} - ${cheapest.voltage}</div>
+        </div>
+    `;
+
+    if (currentResult && currentCost > cheapest.result.total) {
+        const potentialSaving = (currentCost - cheapest.result.total) * 1000;
+        summaryHTML += `
+            <div class="savings-summary-card potential">
+                <h4>${translate('savingsPotential')}</h4>
+                <div class="value" style="color: #28a745;">-€${potentialSaving.toFixed(0)}/yr</div>
+                <div class="sublabel">${translate('savingsBySwitching', { dso: cheapest.dso })}</div>
+            </div>
+        `;
+    }
+
+    summaryHTML += '</div>';
+
+    // Build bar chart
+    let barsHTML = '';
+    allResults.forEach(r => {
+        const cost = r.result.total * 1000;
+        const widthPct = maxCost > 0 ? (r.result.total / maxCost * 100) : 0;
+        const color = barColors[r.dso] || '#6c757d';
+
+        let rowClass = 'savings-bar-row';
+        let badge = '';
+        if (r.isCurrent) {
+            rowClass += ' current';
+            badge = ` <span style="background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; vertical-align: middle;">${translate('savingsYou')}</span>`;
+        }
+        if (r === cheapest) {
+            rowClass += ' cheapest';
+            badge += ` <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; vertical-align: middle;">${translate('savingsBest')}</span>`;
+        }
+
+        // Diff vs current
+        let diffHTML = '';
+        if (currentCost !== null) {
+            const diff = (r.result.total - currentCost) * 1000;
+            if (Math.abs(diff) < 0.5) {
+                diffHTML = `<span class="savings-bar-diff neutral">—</span>`;
+            } else if (diff < 0) {
+                diffHTML = `<span class="savings-bar-diff saving">▼ €${Math.abs(diff).toFixed(0)}/yr</span>`;
+            } else {
+                diffHTML = `<span class="savings-bar-diff extra">▲ €${diff.toFixed(0)}/yr</span>`;
+            }
+        }
+
+        const costPerMWh = baseParams.offtake_energy > 0 ? cost / baseParams.offtake_energy : 0;
+
+        barsHTML += `
+            <div class="${rowClass}">
+                <div class="savings-bar-label">
+                    ${r.dso}${badge}
+                    <small>${r.voltage}</small>
+                </div>
+                <div class="savings-bar-container">
+                    <div class="savings-bar-fill" style="width: ${widthPct.toFixed(1)}%; background: ${color};"></div>
+                </div>
+                <div class="savings-bar-cost">€${cost.toFixed(0)}<small style="color: #999; font-weight: 400;"> (${costPerMWh.toFixed(2)}/MWh)</small></div>
+                ${diffHTML}
+            </div>
+        `;
     });
 
-    // Find best and worst options
-    const bestOption = results[0];
-    const worstOption = results[results.length - 1];
-    const savings = (worstOption.result.total - bestOption.result.total) * 1000;
-
-    // Create summary card
-    summaryDiv.innerHTML = `
-        <div class="insight-card success">
-            <div class="insight-icon">💡</div>
-            <div class="insight-content">
-                <h4>Best Option: ${bestOption.dso} - ${bestOption.voltage}</h4>
-                <p>
-                    Annual cost: <strong>€${(bestOption.result.total * 1000).toFixed(2)}</strong>
-                    (€${bestOption.costPerMWh.toFixed(2)}/MWh)
-                </p>
-                <p style="margin-top: 10px;">
-                    Potential savings vs most expensive option:
-                    <strong>€${savings.toFixed(2)}/year</strong>
-                </p>
-            </div>
-        </div>
-    `;
-
-    // Sort results by total cost (ascending) - already done above
-
-    // Create simple comparison table
-    const tableHTML = `
-        <h4 style="margin-bottom: 15px; color: #495057;">Detailed DSO Comparison</h4>
-        <p style="margin-bottom: 15px; color: #6c757d; font-size: 0.9rem;">
-            ℹ️ This comparison uses the same energy usage and demand parameters across all DSOs.
-            Each DSO's standard voltage level and configuration is used.
-        </p>
-        <div class="comparison-table-wrapper">
-            <table class="breakdown-table">
-                <thead>
-                    <tr>
-                        <th>DSO/TSO</th>
-                        <th>Voltage Level</th>
-                        <th>Region</th>
-                        <th>Connection</th>
-                        <th>Annual Cost</th>
-                        <th>Cost per MWh</th>
-                        <th>vs Best Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${results.map((r, index) => {
-                        const diff = (r.result.total - bestOption.result.total) * 1000;
-                        const isBest = index === 0;
-                        const isWorst = index === results.length - 1;
-
-                        return `
-                            <tr style="background-color: ${isBest ? '#d4edda' : isWorst ? '#f8d7da' : 'transparent'};">
-                                <td><strong>${r.dso}</strong></td>
-                                <td>${r.voltage}</td>
-                                <td>${r.region || '-'}</td>
-                                <td>${r.connection_type || '-'}</td>
-                                <td><strong>€${(r.result.total * 1000).toFixed(2)}</strong></td>
-                                <td>€${r.costPerMWh.toFixed(2)}</td>
-                                <td style="color: ${diff === 0 ? '#28a745' : '#dc3545'}; font-weight: 600;">
-                                    ${diff === 0 ? '✓ Best' : '+€' + diff.toFixed(2)}
-                                </td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
-        </div>
-    `;
-
-    detailsDiv.innerHTML = tableHTML;
+    contentDiv.innerHTML = summaryHTML + barsHTML;
 }
 
 // Cost Breakdown Drill-Down

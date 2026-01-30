@@ -231,7 +231,12 @@ function displayResults(result, params) {
 
     // Make breakdown rows clickable for drill-down
     if (typeof makeBreakdownClickable === 'function') {
-        setTimeout(makeBreakdownClickable, 100); // Small delay to ensure DOM is ready
+        setTimeout(makeBreakdownClickable, 100);
+    }
+
+    // Auto-run savings comparison with other DSOs
+    if (typeof runSavingsComparison === 'function') {
+        runSavingsComparison();
     }
 }
 

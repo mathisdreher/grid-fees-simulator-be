@@ -93,6 +93,18 @@ const translations = {
         percent: "%",
         year: "year",
 
+        // Savings Comparison
+        savingsComparisonTitle: "Savings Comparison with Other DSOs",
+        savingsComparisonSubtitle: "Same usage parameters applied across all Belgian DSOs and voltage levels",
+        savingsLoading: "Comparing all DSOs...",
+        savingsNoData: "No comparison data available",
+        savingsYourCurrent: "Your Current Cost",
+        savingsCheapest: "Cheapest Option",
+        savingsPotential: "Potential Savings",
+        savingsBySwitching: "by switching to {dso}",
+        savingsYou: "YOU",
+        savingsBest: "BEST",
+
         // Errors
         errorCalculation: "Failed to calculate fees. Please try again.",
         errorNoConfig: "No matching fee configuration found"
@@ -189,6 +201,18 @@ const translations = {
         percent: "%",
         year: "an",
 
+        // Savings Comparison
+        savingsComparisonTitle: "Comparaison des économies avec d'autres GRD",
+        savingsComparisonSubtitle: "Mêmes paramètres d'utilisation appliqués à tous les GRD et niveaux de tension belges",
+        savingsLoading: "Comparaison de tous les GRD...",
+        savingsNoData: "Aucune donnée de comparaison disponible",
+        savingsYourCurrent: "Votre coût actuel",
+        savingsCheapest: "Option la moins chère",
+        savingsPotential: "Économies potentielles",
+        savingsBySwitching: "en passant à {dso}",
+        savingsYou: "VOUS",
+        savingsBest: "MEILLEUR",
+
         // Errors
         errorCalculation: "Échec du calcul des frais. Veuillez réessayer.",
         errorNoConfig: "Aucune configuration de frais correspondante trouvée"
@@ -284,6 +308,18 @@ const translations = {
         mva: "MVA",
         percent: "%",
         year: "jaar",
+
+        // Savings Comparison
+        savingsComparisonTitle: "Besparingsvergelijking met andere DNB's",
+        savingsComparisonSubtitle: "Dezelfde gebruiksparameters toegepast op alle Belgische DNB's en spanningsniveaus",
+        savingsLoading: "Alle DNB's vergelijken...",
+        savingsNoData: "Geen vergelijkingsgegevens beschikbaar",
+        savingsYourCurrent: "Uw huidige kosten",
+        savingsCheapest: "Goedkoopste optie",
+        savingsPotential: "Potentiële besparing",
+        savingsBySwitching: "door over te stappen naar {dso}",
+        savingsYou: "U",
+        savingsBest: "BEST",
 
         // Errors
         errorCalculation: "Berekening van kosten mislukt. Probeer het opnieuw.",
@@ -395,6 +431,10 @@ function updateAllText() {
     // Comparison
     updateElementText('comparison-title', t('scenarioComparison'));
     updateButtonText('clear-comparison-btn', t('clearAll'));
+
+    // Savings Comparison
+    updateElementText('savings-comparison-title', t('savingsComparisonTitle'));
+    updateElementText('savings-comparison-subtitle', t('savingsComparisonSubtitle'));
 
     // Footer
     updateElementText('footer-disclaimer', t('disclaimer'));

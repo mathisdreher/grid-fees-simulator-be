@@ -654,6 +654,137 @@
             overflow-x: auto;
         }
 
+        /* Savings Comparison */
+        .savings-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            cursor: default;
+        }
+
+        .savings-bar-row:hover {
+            background: #f8f9fa;
+        }
+
+        .savings-bar-row.current {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+        }
+
+        .savings-bar-row.cheapest {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .savings-bar-label {
+            min-width: 180px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .savings-bar-label small {
+            display: block;
+            font-weight: 400;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .savings-bar-container {
+            flex: 1;
+            height: 28px;
+            background: #e9ecef;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .savings-bar-fill {
+            height: 100%;
+            border-radius: 14px;
+            transition: width 0.6s ease;
+            min-width: 2px;
+        }
+
+        .savings-bar-cost {
+            min-width: 120px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .savings-bar-diff {
+            min-width: 130px;
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .savings-bar-diff.saving {
+            color: #28a745;
+        }
+
+        .savings-bar-diff.extra {
+            color: #dc3545;
+        }
+
+        .savings-bar-diff.neutral {
+            color: #007bff;
+        }
+
+        .savings-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .savings-summary-card {
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .savings-summary-card.best {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .savings-summary-card.current-card {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+        }
+
+        .savings-summary-card.potential {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+
+        .savings-summary-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .savings-summary-card .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .savings-summary-card .sublabel {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
         /* Print Styles */
         @media print {
             .form-section, .action-buttons, footer, .btn {
@@ -939,11 +1070,11 @@
 
                 <!-- Insights Section removed per user request -->
 
-                <!-- DSO Comparison Section -->
-                <div class="insights-section" id="dso-comparison-section" style="display: none; margin-top: 30px; padding-top: 30px; border-top: 2px solid #dee2e6;">
-                    <h3 style="margin-bottom: 20px; color: #495057; font-size: 1.3rem;">🔍 DSO Comparison Results</h3>
-                    <div id="dso-comparison-summary"></div>
-                    <div id="dso-comparison-details" style="margin-top: 20px;"></div>
+                <!-- Savings Comparison Section -->
+                <div id="savings-comparison-section" style="display: none; margin-top: 30px; padding-top: 30px; border-top: 2px solid #dee2e6;">
+                    <h3 style="margin-bottom: 8px; color: #495057; font-size: 1.3rem;" id="savings-comparison-title">Savings Comparison with Other DSOs</h3>
+                    <p style="margin-bottom: 20px; color: #6c757d; font-size: 0.9rem;" id="savings-comparison-subtitle">Same usage parameters applied across all Belgian DSOs and voltage levels</p>
+                    <div id="savings-comparison-content"></div>
                 </div>
             </div>
         </div>

@@ -316,11 +316,17 @@ async function runSavingsComparison() {
 
         const costPerMWh = baseParams.offtake_energy > 0 ? cost / baseParams.offtake_energy : 0;
 
+        // Build detail line: voltage, connection type, region, BESS
+        const details = [r.voltage];
+        if (r.connection_type) details.push(r.connection_type);
+        if (r.region) details.push(r.region);
+        const bessLabel = baseParams.is_bess ? ' | BESS' : '';
+
         barsHTML += `
             <div class="${rowClass}">
                 <div class="savings-bar-label">
                     ${r.dso}${badge}
-                    <small>${r.voltage}</small>
+                    <small>${details.join(' · ')}${bessLabel}</small>
                 </div>
                 <div class="savings-bar-container">
                     <div class="savings-bar-fill" style="width: ${widthPct.toFixed(1)}%; background: ${color};"></div>
@@ -702,6 +708,50 @@ function exportToCSV(result, params) {
     URL.revokeObjectURL(url);
 }
 
+// Save results as JSON
+function saveResultsJSON(result, params) {
+    const data = {
+        generated: new Date().toISOString(),
+        configuration: {
+            dso_tso: params.dso_tso,
+            region: params.region || null,
+            voltage: params.voltage,
+            connection_type: params.connection_type || null,
+            is_bess: params.is_bess
+        },
+        inputs: {
+            offtake_energy_mwh: params.offtake_energy,
+            injection_energy_mwh: params.injection_energy,
+            peak_monthly_mw: params.peak_monthly,
+            peak_yearly_mw: params.peak_yearly,
+            contracted_capacity_mva: params.contracted_capacity
+        },
+        results_eur: {
+            total: +(result.total * 1000).toFixed(2),
+            offtake: +(result.total_offtake * 1000).toFixed(2),
+            injection: +(result.total_injection * 1000).toFixed(2)
+        },
+        breakdown_eur: {}
+    };
+
+    Object.entries(result.breakdown).forEach(([name, fee]) => {
+        data.breakdown_eur[name] = {
+            rate_keur: fee.rate,
+            quantity: fee.quantity,
+            multiplier: fee.multiplier,
+            amount_eur: +(fee.total * 1000).toFixed(2)
+        };
+    });
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `grid-fees-${params.dso_tso}-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 // Sensitivity Analysis
 function showSensitivityAnalysis(params) {
     const modal = document.getElementById('sensitivity-modal');
@@ -753,6 +803,17 @@ function initEnhancements() {
             const result = window.lastCalculationResult;
             if (result && !result.error) {
                 saveScenario(params, result);
+            }
+        });
+    }
+
+    const saveResultsBtn = document.getElementById('save-results-btn');
+    if (saveResultsBtn) {
+        saveResultsBtn.addEventListener('click', () => {
+            const params = getFormData();
+            const result = window.lastCalculationResult;
+            if (result && !result.error) {
+                saveResultsJSON(result, params);
             }
         });
     }

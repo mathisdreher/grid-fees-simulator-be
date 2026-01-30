@@ -54,6 +54,7 @@ const translations = {
         // Action Buttons
         saveForComparison: "Save for Comparison",
         exportToCsv: "Export to CSV",
+        saveResults: "Save Results (JSON)",
         printResults: "Print Results",
 
         // Insights
@@ -162,6 +163,7 @@ const translations = {
         // Action Buttons
         saveForComparison: "Enregistrer pour comparaison",
         exportToCsv: "Exporter en CSV",
+        saveResults: "Enregistrer les résultats (JSON)",
         printResults: "Imprimer les résultats",
 
         // Insights
@@ -270,6 +272,7 @@ const translations = {
         // Action Buttons
         saveForComparison: "Opslaan voor vergelijking",
         exportToCsv: "Exporteren naar CSV",
+        saveResults: "Resultaten opslaan (JSON)",
         printResults: "Resultaten afdrukken",
 
         // Insights
@@ -426,6 +429,7 @@ function updateAllText() {
     // Action Buttons
     updateButtonText('save-scenario-btn', `💾 ${t('saveForComparison')}`);
     updateButtonText('export-csv-btn', `📊 ${t('exportToCsv')}`);
+    updateButtonText('save-results-btn', `💾 ${t('saveResults')}`);
     updateButtonText('print-btn', `🖨️ ${t('printResults')}`);
 
     // Comparison
